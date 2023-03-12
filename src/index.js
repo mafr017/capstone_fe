@@ -5,6 +5,7 @@ import App from './App'
 import { SidebarProvider } from './context/SidebarContext'
 import ThemedSuspense from './components/ThemedSuspense'
 import { Windmill } from '@windmill/react-ui'
+import CustomThemes from './CustomThemes'
 
 // if (process.env.NODE_ENV !== 'production') {
 //   const axe = require('react-axe')
@@ -14,7 +15,7 @@ import { Windmill } from '@windmill/react-ui'
 ReactDOM.render(
   <SidebarProvider>
     <Suspense fallback={<ThemedSuspense />}>
-      <Windmill>
+      <Windmill theme={CustomThemes}>
         <App />
       </Windmill>
     </Suspense>
