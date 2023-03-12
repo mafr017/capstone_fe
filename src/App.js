@@ -6,7 +6,6 @@ import { useAuth } from './hooks/auth';
 const Layout = lazy(() => import('./components/layout/Layout'))
 const Login = lazy(() => import('./pages/Login'))
 const CreateAccount = lazy(() => import('./pages/CreateAccount'))
-const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
 
 function App() {
   // State  
@@ -19,7 +18,7 @@ function App() {
   const handleLogin = val => {
     Cookies.set("token", "123");
     isLoggedInSet(true);
-    navigate('/');
+    navigate.push("/app");
   }
   // Handler        
 
@@ -45,10 +44,9 @@ function App() {
         <Router>
           {/* <AccessibleNavigationAnnouncer /> */}
           <Switch>
-            {/* <Route path="/login" render={() => <Login loginSet={handleLogin} />} /> */}
-            <Route path="/login" component={Login} />
+            <Route path="/login" render={() => <Login loginSet={handleLogin} />} />
+            {/* <Route path="/login" component={Login} /> */}
             <Route path="/create-account" component={CreateAccount} />
-            <Route path="/forgot-password" component={ForgotPassword} />
 
             {/* If you have an index page, you can remothis Redirect */}
             <Redirect exact from="/" to="/login" />

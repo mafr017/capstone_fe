@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 
 import ImageLight from '../assets/img/login-office.jpeg'
 import ImageDark from '../assets/img/login-office-dark.jpeg'
-import { GithubIcon, TwitterIcon } from '../icons'
 import { Label, Input, Button } from '@windmill/react-ui'
 
 function Login({ loginSet }) {
@@ -16,7 +15,8 @@ function Login({ loginSet }) {
   const { register, handleSubmit, formState: { errors, touchedFields } } = useForm({ mode: 'onBlur' });
   const dispatch = useDispatch();
   // Func
-  const handleLogin = (e) => {
+  const handleLogin = (data) => {
+    console.log(data);
     dispatch(setUserData({ name: 'ilham', email: 'ilham@gmail.com' }))
     loginSet(true);
   }
@@ -45,51 +45,28 @@ function Login({ loginSet }) {
             <div className="w-full">
               <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">Login</h1>
               <form onSubmit={handleSubmit(handleLogin)}>
-                <Label>
-                  <span>Email</span>
-                  <Input {...register("email", {
-                    required: { value: true, message: 'ga bole kosong' },
-                    minLength: { value: 3, message: 'email kurang dari 3 karakter' }
-                  })}
-                    className="mt-1" type="text" id="email" placeholder="john@doe.com" />
-                  {touchedFields?.email && errors?.email && errors?.email?.message}
-                </Label>
+                <div className='grid'>
+                  {/* register your input into the hook by invoking the "register" function */}
+                  <Label>
+                    <span>Email</span>
+                    <Input type="email" className="mt-2" placeholder="your@email.com" {...register("email", { required: { value: true, message: "Email is Required!" } })} />
+                    {errors.email && <span className='text-red-600 mt-1'>{errors?.email?.message}</span>}
+                  </Label>
 
-                <Label className="mt-4">
-                  <span>Password</span>
-                  <Input {...register("password", {
-                    required: { value: true, message: 'ga bole kosong' },
-                    minLength: { value: 6, message: 'email kurang dari 6 karakter' }
-                  })}
-                    className="mt-1" type="password" placeholder="***************" />
-                  {touchedFields?.password && errors?.password && errors?.password?.message}
-                </Label>
+                  <Label className="mt-5">
+                    <span>Password</span>
+                    <Input type="password" className="mt-2" placeholder="***********" {...register("password", { required: { value: true, message: "Password is Required!" } })} />
+                    {errors.password && <span className='text-red-600 mt-1'>{errors?.password?.message}</span>}
+                  </Label>
 
-                <Button className="mt-4" block type="submit">
-                  Log in
-                </Button>
+                  <Button className="mt-5" block type="submit">submit</Button>
+                </div>
               </form>
 
-              <hr className="my-8" />
 
-              <Button block layout="outline">
-                <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                Github
-              </Button>
-              <Button className="mt-4" block layout="outline">
-                <TwitterIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                Twitter
-              </Button>
+              <hr className="mt-5" />
 
-              <p className="mt-4">
-                <Link
-                  className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                  to="/forgot-password"
-                >
-                  Forgot your password?
-                </Link>
-              </p>
-              <p className="mt-1">
+              <p className="mt-1 text-center">
                 <Link
                   className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
                   to="/create-account"

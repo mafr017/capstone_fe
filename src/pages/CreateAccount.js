@@ -1,12 +1,30 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useRef } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 
 import ImageLight from '../assets/img/create-account-office.jpeg'
 import ImageDark from '../assets/img/create-account-office-dark.jpeg'
-import { GithubIcon, TwitterIcon } from '../icons'
 import { Input, Label, Button } from '@windmill/react-ui'
+import { useDispatch } from 'react-redux'
+import { useForm } from 'react-hook-form'
 
 function Login() {
+  // State
+
+
+  // Hooks
+  const { register, handleSubmit, watch, reset, formState, formState: { isSubmitSuccessful, errors, touchedFields } } = useForm({ mode: 'onBlur' });
+  const dispatch = useDispatch();
+  const password = useRef({});
+  password.current = watch("password", "");
+
+  // Func
+  const handleRegister = (data) => {
+    console.log(data);
+    alert("Register Success!");
+    reset();
+  }
+  // Use Effect
+
   return (
     <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
       <div className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
@@ -27,52 +45,64 @@ function Login() {
           </div>
           <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
             <div className="w-full">
-              <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
-                Create account
-              </h1>
-              <Label>
-                <span>Email</span>
-                <Input className="mt-1" type="email" placeholder="john@doe.com" />
-              </Label>
-              <Label className="mt-4">
-                <span>Password</span>
-                <Input className="mt-1" placeholder="***************" type="password" />
-              </Label>
-              <Label className="mt-4">
-                <span>Confirm password</span>
-                <Input className="mt-1" placeholder="***************" type="password" />
-              </Label>
+              <form onSubmit={handleSubmit(handleRegister)}>
+                <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
+                  Create account
+                </h1>
+                <Label>
+                  <span>First Name *</span>
+                  <Input className="mt-1" type="text" placeholder="Enter your first name" {...register("firstName", { required: { value: true, message: "First Name is Required!" } })} />
+                  {errors.firstName && <span className='text-red-600 mt-1'>{errors?.firstName?.message}</span>}
+                </Label>
 
-              <Label className="mt-6" check>
+                <Label className="mt-4">
+                  <span>Last Name</span>
+                  <Input className="mt-1" type="text" placeholder="Enter your last name"  {...register("lastName")} />
+                </Label>
+
+                <Label className="mt-4">
+                  <span>Email *</span>
+                  <Input className="mt-1" type="email" placeholder="Enter your email ex:your@email.com" {...register("email", { required: { value: true, message: "Email is Required!" } })} />
+                  {errors.email && <span className='text-red-600 mt-1'>{errors?.email?.message}</span>}
+                </Label>
+
+                <Label className="mt-4">
+                  <span>Password *</span>
+                  <Input className="mt-1" placeholder="***************" type="password" {...register("password", { required: { value: true, message: "Password is Required!" } })} />
+                  {errors.password && <span className='text-red-600 mt-1'>{errors?.password?.message}</span>}
+                </Label>
+
+                <Label className="mt-4">
+                  <span>Confirm password *</span>
+                  <Input className="mt-1" placeholder="***************" type="password" {...register("rePassword", {
+                    required: { value: true, message: "Password is Required!" },
+                    validate: value => value === password.current || "The passwords do not match"
+                  })} />
+                  {errors.rePassword && <span className='text-red-600 mt-1'>{errors?.rePassword?.message}</span>}
+                </Label>
+
+                {/* <Label className="mt-6" check>
                 <Input type="checkbox" />
                 <span className="ml-2">
                   I agree to the <span className="underline">privacy policy</span>
                 </span>
-              </Label>
+              </Label> */}
 
-              <Button tag={Link} to="/login" block className="mt-4">
-                Create account
-              </Button>
+                <Button type="submit" block className="mt-4">
+                  Create account
+                </Button>
 
-              <hr className="my-8" />
+                <hr className="my-8" />
 
-              <Button block layout="outline">
-                <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                Github
-              </Button>
-              <Button block className="mt-4" layout="outline">
-                <TwitterIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                Twitter
-              </Button>
-
-              <p className="mt-4">
-                <Link
-                  className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                  to="/login"
-                >
-                  Already have an account? Login
-                </Link>
-              </p>
+                <p className="mt-4 text-center">
+                  <Link
+                    className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                    to="/login"
+                  >
+                    Already have an account? Login
+                  </Link>
+                </p>
+              </form>
             </div>
           </main>
         </div>
