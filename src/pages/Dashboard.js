@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 
-import CTA from '../components/CTA'
 import InfoCard from '../components/Cards/InfoCard'
 import ChartCard from '../components/Chart/ChartCard'
 import { Doughnut, Line } from 'react-chartjs-2'
@@ -51,8 +50,6 @@ function Dashboard() {
   return (
     <>
       <PageTitle>Dashboard</PageTitle>
-
-      <CTA />
 
       {/* <!-- Cards --> */}
       <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
