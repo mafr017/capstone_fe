@@ -4,7 +4,7 @@ import PageTitle from '../../components/Typography/PageTitle'
 import SectionTitle from '../../components/Typography/SectionTitle'
 import { Input, HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 
-import { MailIcon } from '../../icons'
+import { HomeIcon, MailIcon } from '../../icons'
 import { useHistory } from 'react-router-dom'
 
 function RoomManage() {
@@ -16,7 +16,16 @@ function RoomManage() {
 
     return (
         <>
-            <PageTitle>Room / <button onClick={backToRoom}>Manage</button> </PageTitle>
+            <PageTitle>
+                <div className='flex'>
+                    <button className='font-bold mr-1' onClick={backToRoom}>
+                        <div className='flex'>
+                            <HomeIcon className="w-5 h-auto mr-1" />
+                            <span>Rooms</span>
+                        </div>
+                    </button>/ Manage
+                </div>
+            </PageTitle>
 
             <SectionTitle>Elements</SectionTitle>
 
