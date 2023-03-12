@@ -65,7 +65,7 @@ function Login({ loginSet }) {
                   {touchedFields?.password && errors?.password && errors?.password?.message}
                 </Label>
 
-                <Button className="btn mt-4" block type="submit">
+                <Button className="mt-4" block type="submit">
                   Log in
                 </Button>
               </form>

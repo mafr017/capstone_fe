@@ -5,6 +5,7 @@ import App from './App'
 import { SidebarProvider } from './context/SidebarContext'
 import ThemedSuspense from './components/ThemedSuspense'
 import { Windmill } from '@windmill/react-ui'
+import myTheme from './myTheme.js'
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -21,7 +22,7 @@ ReactDOM.render(
       <PersistGate loading={null} persistor={persistor}>
         <SidebarProvider>
           <Suspense fallback={<ThemedSuspense />}>
-            <Windmill>
+            <Windmill theme={myTheme}>
               <App />
             </Windmill>
           </Suspense>
