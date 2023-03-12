@@ -1,12 +1,28 @@
 import React from 'react'
+import { useDispatch } from "react-redux";
 import { Link } from 'react-router-dom'
+import { setUserData } from "../store/reducer-me";
+import { useForm } from "react-hook-form";
 
 import ImageLight from '../assets/img/login-office.jpeg'
 import ImageDark from '../assets/img/login-office-dark.jpeg'
 import { GithubIcon, TwitterIcon } from '../icons'
 import { Label, Input, Button } from '@windmill/react-ui'
 
-function Login() {
+function Login({ loginSet }) {
+  // State
+
+  // Hooks
+  const { register, handleSubmit, formState: { errors, touchedFields } } = useForm({ mode: 'onBlur' });
+  const dispatch = useDispatch();
+  // Func
+  const handleLogin = (e) => {
+    dispatch(setUserData({ name: 'ilham', email: 'ilham@gmail.com' }))
+    loginSet(true);
+  }
+  // Use Effect
+  console.log({ errors, touchedFields })
+
   return (
     <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
       <div className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
@@ -28,19 +44,31 @@ function Login() {
           <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
             <div className="w-full">
               <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">Login</h1>
-              <Label>
-                <span>Email</span>
-                <Input className="mt-1" type="email" placeholder="john@doe.com" />
-              </Label>
+              <form onSubmit={handleSubmit(handleLogin)}>
+                <Label>
+                  <span>Email</span>
+                  <Input {...register("email", {
+                    required: { value: true, message: 'ga bole kosong' },
+                    minLength: { value: 3, message: 'email kurang dari 3 karakter' }
+                  })}
+                    className="mt-1" type="text" id="email" placeholder="john@doe.com" />
+                  {touchedFields?.email && errors?.email && errors?.email?.message}
+                </Label>
 
-              <Label className="mt-4">
-                <span>Password</span>
-                <Input className="mt-1" type="password" placeholder="***************" />
-              </Label>
+                <Label className="mt-4">
+                  <span>Password</span>
+                  <Input {...register("password", {
+                    required: { value: true, message: 'ga bole kosong' },
+                    minLength: { value: 6, message: 'email kurang dari 6 karakter' }
+                  })}
+                    className="mt-1" type="password" placeholder="***************" />
+                  {touchedFields?.password && errors?.password && errors?.password?.message}
+                </Label>
 
-              <Button className="mt-4" block tag={Link} to="/app">
-                Log in
-              </Button>
+                <Button className="btn mt-4" block type="submit">
+                  Log in
+                </Button>
+              </form>
 
               <hr className="my-8" />
 
