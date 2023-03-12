@@ -5,7 +5,11 @@ import App from './App'
 import { SidebarProvider } from './context/SidebarContext'
 import ThemedSuspense from './components/ThemedSuspense'
 import { Windmill } from '@windmill/react-ui'
-import CustomThemes from './CustomThemes'
+import CustomThemes from './CustomThemes.js'
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './store/index';
 
 // if (process.env.NODE_ENV !== 'production') {
 //   const axe = require('react-axe')
@@ -13,13 +17,19 @@ import CustomThemes from './CustomThemes'
 // }
 
 ReactDOM.render(
-  <SidebarProvider>
-    <Suspense fallback={<ThemedSuspense />}>
-      <Windmill theme={CustomThemes}>
-        <App />
-      </Windmill>
-    </Suspense>
-  </SidebarProvider>,
+  <BrowserRouter>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <SidebarProvider>
+          <Suspense fallback={<ThemedSuspense />}>
+            <Windmill theme={CustomThemes}>
+              <App />
+            </Windmill>
+          </Suspense>
+        </SidebarProvider>
+      </PersistGate>
+    </Provider>
+  </BrowserRouter>,
   document.getElementById('root')
 )
 

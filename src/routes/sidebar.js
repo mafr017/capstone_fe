@@ -7,56 +7,66 @@
  */
 const routes = [
   {
-    path: '/app/dashboard', // the url
+    path: '/app/dashboard',
+    icon: 'HomeIcon',
+    name: 'Dashboard',
+  },
+  {
+    path: '/app/room',
+    icon: 'PeopleRoof',
+    name: 'Rooms',
+  },
+  {
+    path: '/app/dashboard-sample', // the url
     icon: 'HomeIcon', // the component being exported from icons/index.js
-    name: 'Dashboard', // name that appear in Sidebar
+    name: 'Sample Dashboard', // name that appear in Sidebar
   },
   {
     path: '/app/forms',
     icon: 'FormsIcon',
-    name: 'Forms',
+    name: 'Sample Forms',
   },
   {
     path: '/app/cards',
     icon: 'CardsIcon',
-    name: 'Cards',
+    name: 'Sample Cards',
   },
   {
     path: '/app/charts',
     icon: 'ChartsIcon',
-    name: 'Charts',
+    name: 'Sample Charts',
   },
   {
     path: '/app/buttons',
     icon: 'ButtonsIcon',
-    name: 'Buttons',
+    name: 'Sample Buttons',
   },
   {
     path: '/app/modals',
     icon: 'ModalsIcon',
-    name: 'Modals',
+    name: 'Sample Modals',
   },
   {
     path: '/app/tables',
     icon: 'TablesIcon',
-    name: 'Tables',
+    name: 'Sample Tables',
   },
   {
     icon: 'PagesIcon',
-    name: 'Pages',
+    name: 'Sample Pages',
     routes: [
       // submenu
       {
         path: '/login',
-        name: 'Login',
+        name: 'Sample Login',
       },
       {
         path: '/create-account',
-        name: 'Create account',
+        name: 'Sample Create account',
       },
       {
         path: '/forgot-password',
-        name: 'Forgot password',
+        name: 'Sample Forgot password',
       },
       {
         path: '/app/404',
@@ -64,7 +74,7 @@ const routes = [
       },
       {
         path: '/app/blank',
-        name: 'Blank',
+        name: 'Sample Blank',
       },
     ],
   },

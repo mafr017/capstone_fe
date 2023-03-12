@@ -196,10 +196,9 @@ export default {
             disabled: 'opacity-50 cursor-not-allowed',
         },
         outline: {
-            base: 'text-gray-600 border-gray-300 border dark:text-gray-400 focus:outline-none',
-            active:
-                'active:bg-transparent hover:border-gray-500 focus:border-gray-500 active:text-gray-500 focus:ring focus:ring-gray-300',
-            disabled: 'opacity-50 cursor-not-allowed bg-gray-300',
+            base: 'text-white bg-green-600 border border-transparent',
+            active: 'active:bg-green-600 hover:bg-green-700 focus:ring focus:ring-green-300',
+            disabled: 'opacity-50 cursor-not-allowed',
         },
         link: {
             base: 'text-gray-600 dark:text-gray-400 focus:outline-none border border-transparent',
