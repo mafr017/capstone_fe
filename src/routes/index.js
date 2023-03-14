@@ -4,6 +4,7 @@ import { lazy } from 'react'
 const Dashboard = lazy(() => import('../pages/dashboard/Dashboard'))
 const Rooms = lazy(() => import('../pages/room/Room'))
 const RoomManage = lazy(() => import('../pages/room/RoomManage'))
+const Reservation = lazy(() => import('../pages/reservation/Reservation'))
 // SAMPLE
 const DashboardSample = lazy(() => import('../pages/Dashboard'))
 const Forms = lazy(() => import('../pages/Forms'))
@@ -27,20 +28,24 @@ const Blank = lazy(() => import('../pages/Blank'))
  */
 const routes = [
   {
-    path: '/dashboard', // the url
-    component: Dashboard, // view rendered
+    path: '/dashboard',
+    component: Dashboard,
   },
   {
-    path: '/room', // the url
-    component: Rooms, // view rendered
+    path: '/room',
+    component: Rooms,
   },
   {
-    path: '/room/manage', // the url
-    component: RoomManage, // view rendered
+    path: '/room/manage',
+    component: RoomManage,
   },
   {
-    path: '/dashboard-sample', // the url
-    component: DashboardSample, // view rendered
+    path: '/reservation',
+    component: Reservation,
+  },
+  {
+    path: '/dashboard-sample',
+    component: DashboardSample,
   },
   {
     path: '/forms',

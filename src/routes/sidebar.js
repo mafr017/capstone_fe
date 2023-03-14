@@ -17,6 +17,11 @@ const routes = [
     name: 'Rooms',
   },
   {
+    path: '/app/reservation',
+    icon: 'FormsIcon',
+    name: 'Reservations',
+  },
+  {
     path: '/app/dashboard-sample', // the url
     icon: 'HomeIcon', // the component being exported from icons/index.js
     name: 'Sample Dashboard', // name that appear in Sidebar

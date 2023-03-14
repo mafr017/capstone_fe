@@ -5,21 +5,9 @@ import ChartCard from '../../components/Chart/ChartCard'
 import { Doughnut, Line } from 'react-chartjs-2'
 import ChartLegend from '../../components/Chart/ChartLegend'
 import PageTitle from '../../components/Typography/PageTitle'
-import { ChatIcon, CartIcon, MoneyIcon, PeopleIcon, FormsIcon, PeopleRoof } from '../../icons'
+import { PeopleIcon, FormsIcon, PeopleRoof } from '../../icons'
 import RoundIcon from '../../components/RoundIcon'
 import response from '../../utils/demo/tableData'
-import {
-    TableBody,
-    TableContainer,
-    Table,
-    TableHeader,
-    TableCell,
-    TableRow,
-    TableFooter,
-    Avatar,
-    Badge,
-    Pagination,
-} from '@windmill/react-ui'
 
 import {
     doughnutOptions,

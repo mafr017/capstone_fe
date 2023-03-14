@@ -60,10 +60,12 @@ function Rooms() {
           <Table>
             <TableHeader>
               <tr>
-                <TableCell>Client</TableCell>
-                <TableCell>Amount</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Date</TableCell>
+                <TableCell>ID</TableCell>
+                <TableCell>Room Name</TableCell>
+                <TableCell>Room Type</TableCell>
+                <TableCell>Capacity</TableCell>
+                <TableCell>Available From</TableCell>
+                <TableCell>Available To</TableCell>
                 <TableCell>Actions</TableCell>
               </tr>
             </TableHeader>
@@ -71,19 +73,19 @@ function Rooms() {
               {dataTable2.map((user, i) => (
                 <TableRow key={i}>
                   <TableCell>
-                    <div className="flex items-center text-sm">
-                      <Avatar className="hidden mr-3 md:block" src={user.avatar} alt="User avatar" />
-                      <div>
-                        <p className="font-semibold">{user.name}</p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">{user.job}</p>
-                      </div>
-                    </div>
+                    <span className="text-sm">{i + 1}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm">$ {user.amount}</span>
+                    <span className="text-sm">{user.name}</span>
                   </TableCell>
                   <TableCell>
-                    <Badge type={user.status}>{user.status}</Badge>
+                    <span className="text-sm">{user.job}</span>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-sm">{user.amount}</span>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
                   </TableCell>
                   <TableCell>
                     <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
@@ -94,7 +96,7 @@ function Rooms() {
                         <EditIcon className="w-5 h-5" aria-hidden="true" />
                       </Button>
                       <Button layout="link" size="icon" aria-label="Delete">
-                        <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                        <TrashIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
                       </Button>
                     </div>
                   </TableCell>
