@@ -11,21 +11,20 @@ import {
     TableCell,
     TableRow,
     TableFooter,
-    Badge,
     Pagination,
-    Label,
+    Badge
 } from '@windmill/react-ui'
 
-import { Check, Cross, Plus, SearchIcon } from '../../icons'
+import { EditIcon, HeartIcon, MailIcon, Plus, TrashIcon } from '../../icons'
 import { useHistory } from 'react-router-dom'
 
-function Reservation() {
+function RoomsUser() {
     const [pageTable2, setPageTable2] = useState(1)
     const [dataTable2, setDataTable2] = useState([])
     const navigate = useHistory();
 
     const goAddRoom = () => {
-        navigate.push("/app/reservation/manage")
+        navigate.push("/app/room/manage")
     }
 
     // pagination setup
@@ -47,34 +46,18 @@ function Reservation() {
         <>
             <PageTitle>Rooms</PageTitle>
 
-            <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
+            <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
 
-                <div className='flex justify-between'>
-                    <div className='w-1/4 mb-5 my-auto'>
-                        <Label className="mt-4">
-                            <div className="relative text-gray-500 focus-within:text-purple-600">
-                                <input
-                                    className="block w-full pr-20 mt-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input"
-                                    placeholder="Search..."
-                                />
-                                <button className="absolute inset-y-0 right-0 px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                                    <SearchIcon className="w-5 h-5" aria-hidden="true" />
-                                </button>
-                            </div>
-                        </Label>
-                    </div>
-                </div>
-
-                <TableContainer className="mb-8">
+                <TableContainer className="mb-8 mt-4">
                     <Table>
                         <TableHeader>
                             <tr>
-                                <TableCell>No</TableCell>
-                                <TableCell>ID Booking</TableCell>
-                                <TableCell>Start Date</TableCell>
-                                <TableCell>End Date</TableCell>
-                                <TableCell>User</TableCell>
-                                <TableCell>Room</TableCell>
+                                <TableCell>ID</TableCell>
+                                <TableCell>Room Name</TableCell>
+                                <TableCell>Room Type</TableCell>
+                                <TableCell>Capacity</TableCell>
+                                <TableCell>Available From</TableCell>
+                                <TableCell>Available To</TableCell>
                                 <TableCell>Status</TableCell>
                                 <TableCell>Actions</TableCell>
                             </tr>
@@ -86,30 +69,27 @@ function Reservation() {
                                         <span className="text-sm">{i + 1}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.amount}</span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
-                                    </TableCell>
-                                    <TableCell>
                                         <span className="text-sm">{user.name}</span>
                                     </TableCell>
                                     <TableCell>
+                                        <span className="text-sm">{user.job}</span>
+                                    </TableCell>
+                                    <TableCell>
                                         <span className="text-sm">{user.amount}</span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
                                     </TableCell>
                                     <TableCell>
                                         <Badge type={user.status}>{user.status}</Badge>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center space-x-4">
-                                            <Button layout="link" size="icon" aria-label="Edit">
-                                                <Check className="w-5 h-5 text-green-500" aria-hidden="true" />
-                                            </Button>
-                                            <Button layout="link" size="icon" aria-label="Delete">
-                                                <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
+                                            <Button layout="outline" aria-label="Edit">
+                                                Book
                                             </Button>
                                         </div>
                                     </TableCell>
@@ -132,4 +112,4 @@ function Reservation() {
     )
 }
 
-export default Reservation
+export default RoomsUser

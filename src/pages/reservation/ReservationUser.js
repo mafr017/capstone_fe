@@ -19,7 +19,7 @@ import {
 import { Check, Cross, Plus, SearchIcon } from '../../icons'
 import { useHistory } from 'react-router-dom'
 
-function Reservation() {
+function ReservationUser() {
     const [pageTable2, setPageTable2] = useState(1)
     const [dataTable2, setDataTable2] = useState([])
     const navigate = useHistory();
@@ -63,6 +63,12 @@ function Reservation() {
                             </div>
                         </Label>
                     </div>
+
+                    <div className='mb-5 my-auto'>
+                        <Button layout="outline" iconRight={Plus} onClick={goAddRoom}>
+                            <span>Add Reservation</span>
+                        </Button>
+                    </div>
                 </div>
 
                 <TableContainer className="mb-8">
@@ -76,7 +82,6 @@ function Reservation() {
                                 <TableCell>User</TableCell>
                                 <TableCell>Room</TableCell>
                                 <TableCell>Status</TableCell>
-                                <TableCell>Actions</TableCell>
                             </tr>
                         </TableHeader>
                         <TableBody>
@@ -103,16 +108,6 @@ function Reservation() {
                                     <TableCell>
                                         <Badge type={user.status}>{user.status}</Badge>
                                     </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center space-x-4">
-                                            <Button layout="link" size="icon" aria-label="Edit">
-                                                <Check className="w-5 h-5 text-green-500" aria-hidden="true" />
-                                            </Button>
-                                            <Button layout="link" size="icon" aria-label="Delete">
-                                                <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
-                                            </Button>
-                                        </div>
-                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -132,4 +127,4 @@ function Reservation() {
     )
 }
 
-export default Reservation
+export default ReservationUser

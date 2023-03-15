@@ -17,9 +17,19 @@ const routes = [
     name: 'Rooms',
   },
   {
+    path: '/app/room-user',
+    icon: 'PeopleRoof',
+    name: 'Rooms User',
+  },
+  {
     path: '/app/reservation',
     icon: 'ChalkBoardUserIcon',
     name: 'Reservations',
+  },
+  {
+    path: '/app/reservation-user',
+    icon: 'ChalkBoardUserIcon',
+    name: 'Reservations User',
   },
   {
     path: '/app/report',
