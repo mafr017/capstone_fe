@@ -23,7 +23,7 @@ function ReservationManage() {
                             <HomeIcon className="w-5 h-auto mr-1" />
                             <span>Rooms</span>
                         </div>
-                    </button>/ Manage
+                    </button>/ Reservation
                 </div>
             </PageTitle>
 
@@ -33,7 +33,7 @@ function ReservationManage() {
                     <div className="relative text-gray-500 focus-within:text-purple-600 ">
                         <input
                             className="block w-full mt-1 text-sm text-black focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
-                            placeholder="Please fill Room Name"
+                            placeholder="Please fill Room Name" value={"Chandler Jacobi"} disabled
                         />
                     </div>
                 </Label>

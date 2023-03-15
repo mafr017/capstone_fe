@@ -71,8 +71,9 @@ function Reservation() {
                             <tr>
                                 <TableCell>No</TableCell>
                                 <TableCell>ID Booking</TableCell>
-                                <TableCell>Start Date</TableCell>
-                                <TableCell>End Date</TableCell>
+                                <TableCell>Date</TableCell>
+                                <TableCell>Start Time</TableCell>
+                                <TableCell>End Time</TableCell>
                                 <TableCell>User</TableCell>
                                 <TableCell>Room</TableCell>
                                 <TableCell>Status</TableCell>
@@ -92,13 +93,16 @@ function Reservation() {
                                         <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                                        <span className="text-sm">{new Date(user.date).toLocaleTimeString()}</span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-sm">{new Date(user.date).toLocaleTimeString()}</span>
                                     </TableCell>
                                     <TableCell>
                                         <span className="text-sm">{user.name}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.amount}</span>
+                                        <span className="text-sm">{user.job}</span>
                                     </TableCell>
                                     <TableCell>
                                         <Badge type={user.status}>{user.status}</Badge>

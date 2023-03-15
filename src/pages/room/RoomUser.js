@@ -24,7 +24,7 @@ function RoomsUser() {
     const navigate = useHistory();
 
     const goAddRoom = () => {
-        navigate.push("/app/room/manage")
+        navigate.push("/app/reservation/manage")
     }
 
     // pagination setup
@@ -88,7 +88,7 @@ function RoomsUser() {
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center space-x-4">
-                                            <Button layout="outline" aria-label="Edit">
+                                            <Button layout="outline" aria-label="Edit" onClick={goAddRoom}>
                                                 Book
                                             </Button>
                                         </div>
