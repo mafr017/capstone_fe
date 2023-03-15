@@ -30,6 +30,8 @@ import { ReactComponent as PeopleRoof } from './peopleRoof.svg'
 import { ReactComponent as Plus } from './plus.svg'
 import { ReactComponent as Check } from './check.svg'
 import { ReactComponent as Cross } from './cross.svg'
+import { ReactComponent as CalendarIcon } from './calendar.svg'
+import { ReactComponent as ChalkBoardUserIcon } from './chalkboardUser.svg'
 
 export {
   ButtonsIcon,
@@ -63,5 +65,7 @@ export {
   PeopleRoof,
   Plus,
   Check,
-  Cross
+  Cross,
+  CalendarIcon,
+  ChalkBoardUserIcon
 }

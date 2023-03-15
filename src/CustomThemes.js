@@ -117,7 +117,7 @@ export default {
     },
     // Select
     select: {
-        base: 'block w-full text-sm dark:text-gray-300 focus:outline-none rounded-md',
+        base: 'block w-full text-sm dark:text-gray-300 focus:outline-none rounded-md p-2',
         active:
             'focus:border-purple-400 border-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:ring focus:ring-purple-300 dark:focus:ring-gray-300 dark:focus:border-gray-600',
         select: 'leading-5',

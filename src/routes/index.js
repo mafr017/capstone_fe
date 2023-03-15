@@ -5,6 +5,8 @@ const Dashboard = lazy(() => import('../pages/dashboard/Dashboard'))
 const Rooms = lazy(() => import('../pages/room/Room'))
 const RoomManage = lazy(() => import('../pages/room/RoomManage'))
 const Reservation = lazy(() => import('../pages/reservation/Reservation'))
+const ReservatioManage = lazy(() => import('../pages/reservation/ReservatioManage'))
+const Report = lazy(() => import('../pages/report/Report'))
 // SAMPLE
 const DashboardSample = lazy(() => import('../pages/Dashboard'))
 const Forms = lazy(() => import('../pages/Forms'))
@@ -42,6 +44,14 @@ const routes = [
   {
     path: '/reservation',
     component: Reservation,
+  },
+  {
+    path: '/reservation/manage',
+    component: ReservatioManage,
+  },
+  {
+    path: '/report',
+    component: Report,
   },
   {
     path: '/dashboard-sample',

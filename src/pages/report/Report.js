@@ -16,17 +16,11 @@ import {
     Label,
 } from '@windmill/react-ui'
 
-import { Check, Cross, Plus, SearchIcon } from '../../icons'
-import { useHistory } from 'react-router-dom'
+import { CalendarIcon, Check, Cross } from '../../icons'
 
-function Reservation() {
+function Report() {
     const [pageTable2, setPageTable2] = useState(1)
     const [dataTable2, setDataTable2] = useState([])
-    const navigate = useHistory();
-
-    const goAddRoom = () => {
-        navigate.push("/app/reservation/manage")
-    }
 
     // pagination setup
     const resultsPerPage = 10
@@ -45,29 +39,38 @@ function Reservation() {
 
     return (
         <>
-            <PageTitle>Rooms</PageTitle>
+            <PageTitle>Report Reservations Meeting Room</PageTitle>
 
             <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
 
-                <div className='flex justify-between'>
-                    <div className='w-1/4 mb-5 my-auto'>
-                        <Label className="mt-4">
+                <div className='flex justify-start mb-5 mt-4'>
+                    <div className='w-1/4 my-auto mr-5'>
+                        <Label>
+                            Start Date
                             <div className="relative text-gray-500 focus-within:text-purple-600">
                                 <input
                                     className="block w-full pr-20 mt-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input"
-                                    placeholder="Search..."
+                                    placeholder="YYYY-MM-DD"
                                 />
                                 <button className="absolute inset-y-0 right-0 px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                                    <SearchIcon className="w-5 h-5" aria-hidden="true" />
+                                    <CalendarIcon className="w-5 h-5" aria-hidden="true" />
                                 </button>
                             </div>
                         </Label>
                     </div>
-
-                    <div className='mb-5 my-auto'>
-                        <Button layout="outline" iconRight={Plus} onClick={goAddRoom}>
-                            <span>Add Reservation</span>
-                        </Button>
+                    <div className='w-1/4 my-auto'>
+                        <Label>
+                            End Date
+                            <div className="relative text-gray-500 focus-within:text-purple-600">
+                                <input
+                                    className="block w-full pr-20 mt-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input"
+                                    placeholder="YYYY-MM-DD"
+                                />
+                                <button className="absolute inset-y-0 right-0 px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                    <CalendarIcon className="w-5 h-5" aria-hidden="true" />
+                                </button>
+                            </div>
+                        </Label>
                     </div>
                 </div>
 
@@ -82,7 +85,6 @@ function Reservation() {
                                 <TableCell>User</TableCell>
                                 <TableCell>Room</TableCell>
                                 <TableCell>Status</TableCell>
-                                <TableCell>Actions</TableCell>
                             </tr>
                         </TableHeader>
                         <TableBody>
@@ -109,16 +111,6 @@ function Reservation() {
                                     <TableCell>
                                         <Badge type={user.status}>{user.status}</Badge>
                                     </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center space-x-4">
-                                            <Button layout="link" size="icon" aria-label="Edit">
-                                                <Check className="w-5 h-5 text-green-500" aria-hidden="true" />
-                                            </Button>
-                                            <Button layout="link" size="icon" aria-label="Delete">
-                                                <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
-                                            </Button>
-                                        </div>
-                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -138,4 +130,4 @@ function Reservation() {
     )
 }
 
-export default Reservation
+export default Report

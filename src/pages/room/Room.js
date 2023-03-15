@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
 import PageTitle from '../../components/Typography/PageTitle'
-import SectionTitle from '../../components/Typography/SectionTitle'
 import response from '../../utils/demo/tableData'
 import {
   Button,
@@ -12,8 +11,6 @@ import {
   TableCell,
   TableRow,
   TableFooter,
-  Avatar,
-  Badge,
   Pagination,
 } from '@windmill/react-ui'
 
@@ -50,7 +47,7 @@ function Rooms() {
 
       <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
 
-        <div className='mb-5 text-right'>
+        <div className='mb-5 text-right mt-4'>
           <Button layout="outline" iconRight={Plus} onClick={goAddRoom}>
             <span>Add Room</span>
           </Button>
