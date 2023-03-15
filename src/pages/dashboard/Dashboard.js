@@ -71,12 +71,12 @@ function Dashboard() {
 
             <PageTitle>Charts</PageTitle>
             <div className="grid gap-6 mb-8 md:grid-cols-2">
-                <ChartCard title="Revenue">
+                <ChartCard title="Status">
                     <Doughnut {...doughnutOptions} />
                     <ChartLegend legends={doughnutLegends} />
                 </ChartCard>
 
-                <ChartCard title="Traffic">
+                <ChartCard title="Reservation">
                     <Line {...lineOptions} />
                     <ChartLegend legends={lineLegends} />
                 </ChartCard>
