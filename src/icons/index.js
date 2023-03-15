@@ -28,6 +28,10 @@ import { ReactComponent as OutlineCogIcon } from './outlineCog.svg'
 import { ReactComponent as OutlineLogoutIcon } from './outlineLogout.svg'
 import { ReactComponent as PeopleRoof } from './peopleRoof.svg'
 import { ReactComponent as Plus } from './plus.svg'
+import { ReactComponent as Check } from './check.svg'
+import { ReactComponent as Cross } from './cross.svg'
+import { ReactComponent as CalendarIcon } from './calendar.svg'
+import { ReactComponent as ChalkBoardUserIcon } from './chalkboardUser.svg'
 
 export {
   ButtonsIcon,
@@ -60,4 +64,8 @@ export {
   OutlineLogoutIcon,
   PeopleRoof,
   Plus,
+  Check,
+  Cross,
+  CalendarIcon,
+  ChalkBoardUserIcon
 }

@@ -1,7 +1,7 @@
 export const doughnutLegends = [
-  { title: 'Shirts', color: 'bg-blue-500' },
-  { title: 'Shoes', color: 'bg-teal-600' },
-  { title: 'Bags', color: 'bg-purple-600' },
+  { title: 'Pending', color: 'bg-blue-500' },
+  { title: 'Accepted', color: 'bg-teal-600' },
+  { title: 'Refused', color: 'bg-purple-600' },
 ]
 
 export const lineLegends = [
@@ -27,7 +27,7 @@ export const doughnutOptions = {
         label: 'Dataset 1',
       },
     ],
-    labels: ['Shoes', 'Shirts', 'Bags'],
+    labels: ['Pending', 'Accepted', 'Refused'],
   },
   options: {
     responsive: true,

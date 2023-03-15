@@ -13,7 +13,7 @@ function Icon({ icon, ...props }) {
 function SidebarContent() {
   return (
     <div className="text-gray-500">
-      <div className="mt-6 flex text-center h-20">
+      <div className="mt-3 flex text-start h-20 ml-5">
         <div className="m-auto mx-10 text-gray-800 font-bold text-lg">
           Meeting Room Reservation
         </div>
@@ -43,14 +43,6 @@ function SidebarContent() {
           )
         )}
       </ul>
-      <div className="px-6 my-6">
-        <Button>
-          Create account
-          <span className="ml-2" aria-hidden="true">
-            +
-          </span>
-        </Button>
-      </div>
     </div>
   )
 }

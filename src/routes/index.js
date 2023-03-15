@@ -3,7 +3,12 @@ import { lazy } from 'react'
 // use lazy for better code splitting, a.k.a. load faster
 const Dashboard = lazy(() => import('../pages/dashboard/Dashboard'))
 const Rooms = lazy(() => import('../pages/room/Room'))
+const RoomsUser = lazy(() => import('../pages/room/RoomUser'))
 const RoomManage = lazy(() => import('../pages/room/RoomManage'))
+const Reservation = lazy(() => import('../pages/reservation/Reservation'))
+const ReservationUser = lazy(() => import('../pages/reservation/ReservationUser'))
+const ReservatioManage = lazy(() => import('../pages/reservation/ReservatioManage'))
+const Report = lazy(() => import('../pages/report/Report'))
 // SAMPLE
 const DashboardSample = lazy(() => import('../pages/Dashboard'))
 const Forms = lazy(() => import('../pages/Forms'))
@@ -27,20 +32,40 @@ const Blank = lazy(() => import('../pages/Blank'))
  */
 const routes = [
   {
-    path: '/dashboard', // the url
-    component: Dashboard, // view rendered
+    path: '/dashboard',
+    component: Dashboard,
   },
   {
-    path: '/room', // the url
-    component: Rooms, // view rendered
+    path: '/room',
+    component: Rooms,
   },
   {
-    path: '/room/manage', // the url
-    component: RoomManage, // view rendered
+    path: '/room-user',
+    component: RoomsUser,
   },
   {
-    path: '/dashboard-sample', // the url
-    component: DashboardSample, // view rendered
+    path: '/room/manage',
+    component: RoomManage,
+  },
+  {
+    path: '/reservation',
+    component: Reservation,
+  },
+  {
+    path: '/reservation-user',
+    component: ReservationUser,
+  },
+  {
+    path: '/reservation/manage',
+    component: ReservatioManage,
+  },
+  {
+    path: '/report',
+    component: Report,
+  },
+  {
+    path: '/dashboard-sample',
+    component: DashboardSample,
   },
   {
     path: '/forms',
