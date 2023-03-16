@@ -16,7 +16,7 @@ import {
     Label,
 } from '@windmill/react-ui'
 
-import { Check, Cross, Plus, SearchIcon } from '../../icons'
+import { Cross, SearchIcon } from '../../icons'
 import { useHistory } from 'react-router-dom'
 
 function ReservationUser() {
@@ -73,6 +73,7 @@ function ReservationUser() {
                                 <TableCell>User</TableCell>
                                 <TableCell>Room</TableCell>
                                 <TableCell>Status</TableCell>
+                                <TableCell>Actions</TableCell>
                             </tr>
                         </TableHeader>
                         <TableBody>
@@ -101,6 +102,13 @@ function ReservationUser() {
                                     </TableCell>
                                     <TableCell>
                                         <Badge type={user.status}>{user.status}</Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center justify-center">
+                                            <Button layout="link" size="icon" aria-label="Cancel">
+                                                <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
+                                            </Button>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))}

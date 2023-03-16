@@ -1,27 +1,33 @@
-import React, { useEffect, useRef } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import React, { useRef } from 'react'
+import { Link } from 'react-router-dom'
+import Cookies from "js-cookie";
+import { useForm } from 'react-hook-form'
+import { useFetcherGlobal } from '../hooks/fetcherGlobal';
 
 import ImageLight from '../assets/img/create-account-office.jpeg'
 import ImageDark from '../assets/img/create-account-office-dark.jpeg'
 import { Input, Label, Button } from '@windmill/react-ui'
-import { useDispatch } from 'react-redux'
-import { useForm } from 'react-hook-form'
 
 function Login() {
   // State
 
 
   // Hooks
-  const { register, handleSubmit, watch, reset, formState, formState: { isSubmitSuccessful, errors, touchedFields } } = useForm({ mode: 'onBlur' });
-  const dispatch = useDispatch();
+  const { fetchData } = useFetcherGlobal();
+  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
   const password = useRef({});
   password.current = watch("password", "");
 
   // Func
-  const handleRegister = (data) => {
+  const handleRegister = async (data) => {
     console.log(data);
-    alert("Register Success!");
+    let response = await fetchData(data, `/api/v1/auth/register`, `POST`);
     reset();
+    if (response) {
+      alert("Register Success!");
+    } else {
+      alert("Register Failed!")
+    }
   }
   // Use Effect
 
@@ -51,24 +57,40 @@ function Login() {
                 </h1>
                 <Label>
                   <span>First Name *</span>
-                  <Input className="mt-1" type="text" placeholder="Enter your first name" {...register("firstName", { required: { value: true, message: "First Name is Required!" } })} />
+                  <Input className="mt-1" type="text" placeholder="Enter your First Name" {...register("firstName", { required: { value: true, message: "First Name is Required!" } })} />
                   {errors.firstName && <span className='text-red-600 mt-1'>{errors?.firstName?.message}</span>}
                 </Label>
 
                 <Label className="mt-4">
                   <span>Last Name</span>
-                  <Input className="mt-1" type="text" placeholder="Enter your last name"  {...register("lastName")} />
+                  <Input className="mt-1" type="text" placeholder="Enter your Last Name"  {...register("lastName")} />
                 </Label>
 
                 <Label className="mt-4">
                   <span>Username *</span>
-                  <Input className="mt-1" type="text" placeholder="Enter your username" {...register("username", { required: { value: true, message: "username is Required!" } })} />
+                  <Input className="mt-1" type="text" placeholder="Enter your username" {...register("username", {
+                    required: { value: true, message: "username is Required!" },
+                    minLength: { value: 4, message: 'At least 4 characters' }
+                  })} />
                   {errors.username && <span className='text-red-600 mt-1'>{errors?.username?.message}</span>}
                 </Label>
 
                 <Label className="mt-4">
+                  <span>Email *</span>
+                  <Input className="mt-1" type="email" placeholder="Enter your name@server.domain" {...register("email", { required: { value: true, message: "email is Required!" } })} />
+                  {errors.email && <span className='text-red-600 mt-1'>{errors?.email?.message}</span>}
+                </Label>
+
+                <Label className="mt-4">
                   <span>Password *</span>
-                  <Input className="mt-1" placeholder="***************" type="password" {...register("password", { required: { value: true, message: "Password is Required!" } })} />
+                  <Input className="mt-1" placeholder="***************" type="password" {...register("password", {
+                    required: { value: true, message: "Password is Required!" },
+                    minLength: { value: 8, message: 'At least 8 characters' },
+                    pattern: {
+                      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                      message: "At least 1 lowercase, 1 uppercase, 1 number, 1 special character '@$!%*?&'"
+                    }
+                  })} />
                   {errors.password && <span className='text-red-600 mt-1'>{errors?.password?.message}</span>}
                 </Label>
 
@@ -80,13 +102,6 @@ function Login() {
                   })} />
                   {errors.rePassword && <span className='text-red-600 mt-1'>{errors?.rePassword?.message}</span>}
                 </Label>
-
-                {/* <Label className="mt-6" check>
-                <Input type="checkbox" />
-                <span className="ml-2">
-                  I agree to the <span className="underline">privacy policy</span>
-                </span>
-              </Label> */}
 
                 <Button type="submit" block className="mt-4">
                   Create account

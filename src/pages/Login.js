@@ -12,7 +12,7 @@ function Login({ loginSet }) {
   // State
 
   // Hooks
-  const { fetchData } = useFetcherGlobal({ path: `/api/v1/auth/login`, method: `POST` });
+  const { fetchData } = useFetcherGlobal();
 
   const { register, handleSubmit, reset, formState: { errors, touchedFields } } = useForm({ mode: 'onBlur' });
 
@@ -20,7 +20,7 @@ function Login({ loginSet }) {
   const handleLogin = async (dataa) => {
 
     console.log(dataa);
-    let response = await fetchData(dataa);
+    let response = await fetchData(dataa, `/api/v1/auth/login`, `POST`);
     reset();
     if (response) {
       // Set Cookies Data User

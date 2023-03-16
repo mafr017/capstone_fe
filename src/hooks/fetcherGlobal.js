@@ -2,18 +2,18 @@ import axios from "axios";
 import { useState } from "react"
 require("dotenv").config();
 
-export const useFetcherGlobal = (config) => {
+export const useFetcherGlobal = () => {
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
-  async function fetchData(dataBody) {
+  async function fetchData(dataBody, path, method) {
     setIsLoading(true);
 
     try {
       const { data: dataFromAPI } = await axios({
         baseURL: process.env.REACT_APP_URL_AUTH,
-        url: `${config?.path}`,
-        method: config?.method || 'get',
+        url: `${path}`,
+        method: method || 'get',
         data: dataBody
       });
 

@@ -2,7 +2,9 @@ import React from 'react'
 import routes from '../../routes/sidebar'
 import { NavLink, Route } from 'react-router-dom'
 import * as Icons from '../../icons'
-import SidebarSubmenu from './SidebarSubmenu'
+import Cookies from "js-cookie";
+
+const role = Cookies.get("role");
 
 function Icon({ icon, ...props }) {
   const Icon = Icons[icon]
@@ -18,10 +20,10 @@ function SidebarContent() {
         </div>
       </div>
       <ul className="mt-6">
-        {routes.map((route) =>
-          route.routes ? (
-            <SidebarSubmenu route={route} key={route.name} />
-          ) : (
+        {routes.map((route) => {
+          console.log(route)
+          console.log((route.role == "all" || route.role == role))
+          return (route.role == "all" || route.role == role) ? (
             <li className="relative px-6 py-3" key={route.name}>
               <NavLink
                 exact
@@ -39,7 +41,10 @@ function SidebarContent() {
                 <span className="ml-4">{route.name}</span>
               </NavLink>
             </li>
+          ) : (
+            null
           )
+        }
         )}
       </ul>
     </div>

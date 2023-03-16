@@ -1,10 +1,9 @@
 import React from 'react'
 
 import PageTitle from '../../components/Typography/PageTitle'
-import SectionTitle from '../../components/Typography/SectionTitle'
-import { Input, Button, Label, Select, Textarea } from '@windmill/react-ui'
+import { Button, Label, Select } from '@windmill/react-ui'
 
-import { CalendarIcon, HomeIcon, MailIcon, Plus } from '../../icons'
+import { CalendarIcon, HomeIcon, Plus } from '../../icons'
 import { useHistory } from 'react-router-dom'
 
 function ReservationManage() {

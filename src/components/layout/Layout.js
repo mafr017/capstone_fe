@@ -1,6 +1,7 @@
-import React, { useContext, Suspense, useEffect, lazy } from 'react'
+import React, { useContext, Suspense, useEffect, lazy, useState } from 'react'
 import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import routes from '../../routes'
+import Cookies from "js-cookie";
 
 import Sidebar from '../Sidebar'
 import Header from '../Header'
@@ -10,8 +11,10 @@ import { SidebarContext } from '../../context/SidebarContext'
 
 const Page404 = lazy(() => import('../../pages/404'))
 
+const role = Cookies.get("role");
+
 function Layout() {
-  const { isSidebarOpen, closeSidebar } = useContext(SidebarContext)
+  const { isSidebarOpen, closeSidebar } = useContext(SidebarContext);
   let location = useLocation()
 
   useEffect(() => {
@@ -30,7 +33,7 @@ function Layout() {
           <Suspense fallback={<ThemedSuspense />}>
             <Switch>
               {routes.map((route, i) => {
-                return route.component ? (
+                return (route.role == "all" || route.role == role) ? (
                   <Route
                     key={i}
                     exact={true}

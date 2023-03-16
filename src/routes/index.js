@@ -33,34 +33,42 @@ const Blank = lazy(() => import('../pages/Blank'))
 const routes = [
   {
     path: '/dashboard',
+    role: 'all',
     component: Dashboard,
   },
   {
     path: '/room',
+    role: 'admin',
     component: Rooms,
   },
   {
     path: '/room-user',
+    role: 'user',
     component: RoomsUser,
   },
   {
     path: '/room/manage',
+    role: 'admin',
     component: RoomManage,
   },
   {
     path: '/reservation',
+    role: 'admin',
     component: Reservation,
   },
   {
     path: '/reservation-user',
+    role: 'user',
     component: ReservationUser,
   },
   {
     path: '/reservation/manage',
+    role: 'user',
     component: ReservatioManage,
   },
   {
     path: '/report',
+    role: 'all',
     component: Report,
   },
   {
@@ -85,6 +93,7 @@ const routes = [
   },
   {
     path: '/modals',
+    role: 'all',
     component: Modals,
   },
   {
@@ -93,6 +102,7 @@ const routes = [
   },
   {
     path: '/404',
+    role: 'all',
     component: Page404,
   },
   {
