@@ -1,27 +1,44 @@
 import React from 'react'
-import { useDispatch } from "react-redux";
 import { Link } from 'react-router-dom'
-import { setUserData } from "../store/reducer-me";
 import { useForm } from "react-hook-form";
+import Cookies from "js-cookie";
 
 import ImageLight from '../assets/img/login-office.jpeg'
 import ImageDark from '../assets/img/login-office-dark.jpeg'
 import { Label, Input, Button } from '@windmill/react-ui'
+import { useFetcherGlobal } from '../hooks/fetcherGlobal';
 
 function Login({ loginSet }) {
   // State
 
   // Hooks
-  const { register, handleSubmit, formState: { errors, touchedFields } } = useForm({ mode: 'onBlur' });
-  const dispatch = useDispatch();
+  const { fetchData } = useFetcherGlobal({ path: `/api/v1/auth/login`, method: `POST` });
+
+  const { register, handleSubmit, reset, formState: { errors, touchedFields } } = useForm({ mode: 'onBlur' });
+
   // Func
-  const handleLogin = (data) => {
-    console.log(data);
-    dispatch(setUserData({ name: 'ilham', email: 'ilham@gmail.com' }))
-    loginSet(true);
+  const handleLogin = async (dataa) => {
+
+    console.log(dataa);
+    let response = await fetchData(dataa);
+    reset();
+    if (response) {
+      // Set Cookies Data User
+      Cookies.set("id", response.data.id);
+      Cookies.set("username", response.data.username);
+      Cookies.set("email", response.data.email);
+      Cookies.set("firstName", response.data.firstName);
+      Cookies.set("lastName", response.data.lastName);
+      Cookies.set("role", response.data.role);
+      Cookies.set("token", response.data.accessToken);
+      loginSet(true);
+    } else {
+      alert("Wrong Email or Password!")
+    }
   }
+
   // Use Effect
-  console.log({ errors, touchedFields })
+  // console.log({ errors, touchedFields })
 
   return (
     <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
@@ -44,13 +61,15 @@ function Login({ loginSet }) {
           <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
             <div className="w-full">
               <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">Login</h1>
-              <form onSubmit={handleSubmit(handleLogin)}>
+              <form onSubmit={
+                handleSubmit(handleLogin)
+              }>
                 <div className='grid'>
                   {/* register your input into the hook by invoking the "register" function */}
                   <Label>
-                    <span>Email</span>
-                    <Input type="email" className="mt-2" placeholder="your@email.com" {...register("email", { required: { value: true, message: "Email is Required!" } })} />
-                    {errors.email && <span className='text-red-600 mt-1'>{errors?.email?.message}</span>}
+                    <span>Username</span>
+                    <Input type="text" className="mt-2" placeholder="Your Username" {...register("username", { required: { value: true, message: "username is Required!" } })} />
+                    {errors.username && <span className='text-red-600 mt-1'>{errors?.username?.message}</span>}
                   </Label>
 
                   <Label className="mt-5">
@@ -59,7 +78,7 @@ function Login({ loginSet }) {
                     {errors.password && <span className='text-red-600 mt-1'>{errors?.password?.message}</span>}
                   </Label>
 
-                  <Button className="mt-5" block type="submit">submit</Button>
+                  <Button className="mt-5" block type="submit">Submit</Button>
                 </div>
               </form>
 

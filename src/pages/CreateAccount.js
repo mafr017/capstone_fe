@@ -61,9 +61,9 @@ function Login() {
                 </Label>
 
                 <Label className="mt-4">
-                  <span>Email *</span>
-                  <Input className="mt-1" type="email" placeholder="Enter your email ex:your@email.com" {...register("email", { required: { value: true, message: "Email is Required!" } })} />
-                  {errors.email && <span className='text-red-600 mt-1'>{errors?.email?.message}</span>}
+                  <span>Username *</span>
+                  <Input className="mt-1" type="text" placeholder="Enter your username" {...register("username", { required: { value: true, message: "username is Required!" } })} />
+                  {errors.username && <span className='text-red-600 mt-1'>{errors?.username?.message}</span>}
                 </Label>
 
                 <Label className="mt-4">
