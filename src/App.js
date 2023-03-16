@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 import React, { lazy } from 'react'
 import { BrowserRouter as Router, Switch, Route, Redirect, useHistory } from 'react-router-dom'
 import { useAuth } from './hooks/auth';
@@ -16,7 +15,6 @@ function App() {
   console.log("isLoggedIn: " + isLoggedIn)
   // Func
   const handleLogin = val => {
-    Cookies.set("token", "123");
     isLoggedInSet(true);
     navigate.push("/app");
   }
