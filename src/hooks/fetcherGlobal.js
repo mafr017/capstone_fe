@@ -22,7 +22,8 @@ export const useFetcherGlobal = () => {
       setIsLoading(false);
       return dataFromAPI;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      return error;
     }
   }
 
@@ -44,7 +45,7 @@ export const useFetcherGlobal = () => {
       setIsLoading(false);
       return dataFromAPI;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 
