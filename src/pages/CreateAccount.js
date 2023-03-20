@@ -13,7 +13,7 @@ function Login() {
 
 
   // Hooks
-  const { fetchData } = useFetcherGlobal();
+  const { fetchDataAuth } = useFetcherGlobal();
   const { register, handleSubmit, watch, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
   const password = useRef({});
   password.current = watch("password", "");
@@ -21,7 +21,7 @@ function Login() {
   // Func
   const handleRegister = async (data) => {
     console.log(data);
-    let response = await fetchData(data, `/api/v1/auth/register`, `POST`);
+    let response = await fetchDataAuth(data, `/api/v1/auth/register`, `POST`);
     reset();
     if (response) {
       alert("Register Success!");
