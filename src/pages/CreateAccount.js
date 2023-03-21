@@ -41,7 +41,7 @@ function Login() {
         messageSet(() => "User already exist!")
         openModal(false)
       } else {
-        openModal(true)
+        openModal(false)
       }
     }
   }

@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import PageTitle from '../../components/Typography/PageTitle'
-import { get, useForm } from 'react-hook-form'
 import { useFetcherGlobal } from '../../hooks/fetcherGlobal';
-import response from '../../utils/demo/tableDataEmpty'
 import {
   Button,
   TableBody,
@@ -17,15 +15,13 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter
 } from '@windmill/react-ui'
 
-import { EditIcon, HeartIcon, MailIcon, Plus, TrashIcon } from '../../icons'
+import { EditIcon, Plus, TrashIcon } from '../../icons'
 import { useHistory } from 'react-router-dom'
 
 function Rooms() {
   // State
   const navigate = useHistory();
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [roomName, roomNameSet] = useState(false)
-  const [pageTable2, setPageTable2] = useState(1)
   const [dataTable2, setDataTable2] = useState([])
   const [resultsPerPage, setResultsPerPage] = useState(6)
   const [totalOfPages, setTotalOfPages] = useState(4)
@@ -33,7 +29,11 @@ function Rooms() {
   const [idRoom, setIdRoom] = useState(0)
 
   const goAddRoom = () => {
-    navigate.push("/app/room/manage")
+    navigate.push("/app/room/add")
+  }
+
+  const goEditRoom = (id) => {
+    navigate.push(`/app/room/edit/${id}`)
   }
 
 
@@ -128,7 +128,7 @@ function Rooms() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-4">
-                      <Button layout="link" size="icon" aria-label="Edit">
+                      <Button layout="link" size="icon" aria-label="Edit" onClick={() => goEditRoom(user.id)}>
                         <EditIcon className="w-5 h-5" aria-hidden="true" />
                       </Button>
                       <Button layout="link" size="icon" aria-label="Delete" onClick={() => openModal(user.nameRoom, user.id)}>

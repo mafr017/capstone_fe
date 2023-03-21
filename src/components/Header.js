@@ -55,6 +55,9 @@ function Header() {
         <ul className="flex items-center flex-shrink-0 space-x-6">
           {/* <!-- Profile menu --> */}
           <li className="relative">
+            <span className='my-auto mr-4'>
+              Hello, {Cookies.get("firstName")} {Cookies.get("lastName") != "null" ? Cookies.get("lastName") : ""}
+            </span>
             <button
               className="rounded-full focus:shadow-outline-purple focus:outline-none"
               onClick={handleProfileClick}

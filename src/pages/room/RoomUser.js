@@ -19,9 +19,12 @@ import { useHistory } from 'react-router-dom'
 function RoomsUser() {
     // State
     const navigate = useHistory();
+    const [isModalOpen, setIsModalOpen] = useState(false)
     const [dataTable2, setDataTable2] = useState([])
     const [resultsPerPage, setResultsPerPage] = useState(6)
     const [totalOfPages, setTotalOfPages] = useState(4)
+    const [nameRoom, setNameRoom] = useState("")
+    const [idRoom, setIdRoom] = useState(0)
 
     const goAddRoom = () => {
         navigate.push("/app/reservation/manage")
