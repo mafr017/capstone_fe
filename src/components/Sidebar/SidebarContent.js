@@ -2,7 +2,10 @@ import React from 'react'
 import routes from '../../routes/sidebar'
 import { NavLink, Route } from 'react-router-dom'
 import * as Icons from '../../icons'
-import SidebarSubmenu from './SidebarSubmenu'
+import Cookies from "js-cookie";
+import ImageMeeting from '../../assets/img/meeting.png'
+
+const role = Cookies.get("role");
 
 function Icon({ icon, ...props }) {
   const Icon = Icons[icon]
@@ -12,16 +15,19 @@ function Icon({ icon, ...props }) {
 function SidebarContent() {
   return (
     <div className="text-gray-500">
-      <div className="mt-3 flex text-start h-20 ml-5">
-        <div className="m-auto mx-10 text-gray-800 font-bold text-lg">
-          Meeting Room Reservation
+      <div className="mt-3 flex text-start h-20">
+        <div className="m-auto mx-4 text-gray-800 font-bold text-lg">
+          <img
+            aria-hidden="true"
+            className="object-cover w-full h-full dark:hidden"
+            src={ImageMeeting}
+            alt="Office"
+          />
         </div>
       </div>
       <ul className="mt-6">
-        {routes.map((route) =>
-          route.routes ? (
-            <SidebarSubmenu route={route} key={route.name} />
-          ) : (
+        {routes.map((route) => {
+          return (route.role == "all" || route.role == role) ? (
             <li className="relative px-6 py-3" key={route.name}>
               <NavLink
                 exact
@@ -39,7 +45,10 @@ function SidebarContent() {
                 <span className="ml-4">{route.name}</span>
               </NavLink>
             </li>
+          ) : (
+            null
           )
+        }
         )}
       </ul>
     </div>

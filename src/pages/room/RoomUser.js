@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import PageTitle from '../../components/Typography/PageTitle'
-import response from '../../utils/demo/tableData'
+import { useFetcherGlobal } from '../../hooks/fetcherGlobal';
 import {
     Button,
     TableBody,
@@ -11,36 +11,42 @@ import {
     TableCell,
     TableRow,
     TableFooter,
-    Pagination,
-    Badge
+    Pagination
 } from '@windmill/react-ui'
 
-import { EditIcon, HeartIcon, MailIcon, Plus, TrashIcon } from '../../icons'
 import { useHistory } from 'react-router-dom'
 
 function RoomsUser() {
-    const [pageTable2, setPageTable2] = useState(1)
-    const [dataTable2, setDataTable2] = useState([])
+    // State
     const navigate = useHistory();
+    const [dataTable2, setDataTable2] = useState([])
+    const [resultsPerPage, setResultsPerPage] = useState(6)
+    const [totalOfPages, setTotalOfPages] = useState(4)
 
-    const goAddRoom = () => {
-        navigate.push("/app/reservation/manage")
+    const goAddRoom = (id) => {
+        navigate.push(`/app/reservation/manage/${id}`)
     }
 
-    // pagination setup
-    const resultsPerPage = 10
-    const totalResults = response.length
+    // Hooks
+    const { fetchData } = useFetcherGlobal();
+    const getData = async (page) => {
+        const dataRoom = await fetchData(null, `/api/v1/rooms/pagination?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
+        if (dataRoom?.httpStatus) {
+            setDataTable2(dataRoom?.data.data)
+            setResultsPerPage(() => 5)
+            setTotalOfPages(() => dataRoom?.data?.totalOfItems)
+        } else {
+            alert("Get data Failed!")
+        }
+    }
 
     // pagination change control
     function onPageChangeTable2(p) {
-        setPageTable2(p)
+        getData(p)
     }
 
-    // on page change, load new sliced data
-    // here you would make another server request for new data
     useEffect(() => {
-        setDataTable2(response.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-    }, [pageTable2])
+    }, [resultsPerPage, totalOfPages])
 
     return (
         <>
@@ -58,7 +64,6 @@ function RoomsUser() {
                                 <TableCell>Capacity</TableCell>
                                 <TableCell>Available From</TableCell>
                                 <TableCell>Available To</TableCell>
-                                <TableCell>Status</TableCell>
                                 <TableCell>Actions</TableCell>
                             </tr>
                         </TableHeader>
@@ -66,29 +71,26 @@ function RoomsUser() {
                             {dataTable2.map((user, i) => (
                                 <TableRow key={i}>
                                     <TableCell>
-                                        <span className="text-sm">{i + 1}</span>
+                                        <span className="text-sm">{user.id}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.name}</span>
+                                        <span className="text-sm">{user.nameRoom}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.job}</span>
+                                        <span className="text-sm">{user.typeRoom.name}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.amount}</span>
+                                        <span className="text-sm">{user.capacity}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                                        <span className="text-sm">{user.availableFrom}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Badge type={user.status}>{user.status}</Badge>
+                                        <span className="text-sm">{user.availableTo}</span>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center space-x-4">
-                                            <Button layout="outline" aria-label="Edit" onClick={goAddRoom}>
+                                            <Button layout="outline" aria-label="Edit" onClick={() => goAddRoom(user.id)}>
                                                 Book
                                             </Button>
                                         </div>
@@ -99,8 +101,8 @@ function RoomsUser() {
                     </Table>
                     <TableFooter>
                         <Pagination
-                            totalResults={totalResults}
-                            resultsPerPage={resultsPerPage}
+                            totalResults={resultsPerPage}
+                            resultsPerPage={5}
                             onChange={onPageChangeTable2}
                             label="Table navigation"
                         />

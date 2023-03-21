@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import PageTitle from '../../components/Typography/PageTitle'
-import response from '../../utils/demo/tableData'
+import { useFetcherGlobal } from '../../hooks/fetcherGlobal';
 import {
   Button,
   TableBody,
@@ -12,34 +12,73 @@ import {
   TableRow,
   TableFooter,
   Pagination,
+  Modal, ModalHeader, ModalBody, ModalFooter
 } from '@windmill/react-ui'
 
-import { EditIcon, HeartIcon, MailIcon, Plus, TrashIcon } from '../../icons'
+import { EditIcon, Plus, TrashIcon } from '../../icons'
 import { useHistory } from 'react-router-dom'
 
 function Rooms() {
-  const [pageTable2, setPageTable2] = useState(1)
-  const [dataTable2, setDataTable2] = useState([])
+  // State
   const navigate = useHistory();
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [dataTable2, setDataTable2] = useState([])
+  const [resultsPerPage, setResultsPerPage] = useState(6)
+  const [totalOfPages, setTotalOfPages] = useState(4)
+  const [nameRoom, setNameRoom] = useState("")
+  const [idRoom, setIdRoom] = useState(0)
 
   const goAddRoom = () => {
-    navigate.push("/app/room/manage")
+    navigate.push("/app/room/add")
   }
 
-  // pagination setup
-  const resultsPerPage = 10
-  const totalResults = response.length
+  const goEditRoom = (id) => {
+    navigate.push(`/app/room/edit/${id}`)
+  }
+
+
+  // Hooks
+  const { fetchData } = useFetcherGlobal();
+  const getData = async (page) => {
+    const dataRoom = await fetchData(null, `/api/v1/rooms/pagination?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
+    if (dataRoom?.httpStatus) {
+      setDataTable2(dataRoom?.data.data)
+      setResultsPerPage(() => 5)
+      setTotalOfPages(() => dataRoom?.data?.totalOfItems)
+    } else {
+      alert("Get data Failed!")
+    }
+  }
+
+  // Func
+  function openModal(nameRoom, idRoom) {
+    setNameRoom(() => nameRoom)
+    setIdRoom(() => idRoom)
+    setIsModalOpen(true)
+  }
+
+  function closeModal() {
+    setIsModalOpen(false)
+  }
+
+  function deleteModal() {
+    let response = fetchData(null, `/api/v1/rooms/${idRoom}`, `DELETE`);
+    if (response?.httpStatus) {
+      console.log("SUCCESS DELETE ID: " + idRoom);
+    } else {
+      alert("Get data Failed!")
+    }
+    setIsModalOpen(false)
+    onPageChangeTable2(1);
+  }
 
   // pagination change control
   function onPageChangeTable2(p) {
-    setPageTable2(p)
+    getData(p)
   }
 
-  // on page change, load new sliced data
-  // here you would make another server request for new data
   useEffect(() => {
-    setDataTable2(response.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-  }, [pageTable2])
+  }, [resultsPerPage, totalOfPages])
 
   return (
     <>
@@ -70,29 +109,29 @@ function Rooms() {
               {dataTable2.map((user, i) => (
                 <TableRow key={i}>
                   <TableCell>
-                    <span className="text-sm">{i + 1}</span>
+                    <span className="text-sm">{user.id}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm">{user.name}</span>
+                    <span className="text-sm">{user.nameRoom}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm">{user.job}</span>
+                    <span className="text-sm">{user.typeRoom.name}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm">{user.amount}</span>
+                    <span className="text-sm">{user.capacity}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                    <span className="text-sm">{user.availableFrom}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                    <span className="text-sm">{user.availableTo}</span>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-4">
-                      <Button layout="link" size="icon" aria-label="Edit">
+                      <Button layout="link" size="icon" aria-label="Edit" onClick={() => goEditRoom(user.id)}>
                         <EditIcon className="w-5 h-5" aria-hidden="true" />
                       </Button>
-                      <Button layout="link" size="icon" aria-label="Delete">
+                      <Button layout="link" size="icon" aria-label="Delete" onClick={() => openModal(user.nameRoom, user.id)}>
                         <TrashIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
                       </Button>
                     </div>
@@ -103,13 +142,32 @@ function Rooms() {
           </Table>
           <TableFooter>
             <Pagination
-              totalResults={totalResults}
-              resultsPerPage={resultsPerPage}
+              totalResults={totalOfPages}
+              resultsPerPage={5}
               onChange={onPageChangeTable2}
               label="Table navigation"
             />
           </TableFooter>
         </TableContainer>
+
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <ModalHeader>Are you sure to delete data?</ModalHeader>
+          <ModalBody>
+            Delete Room Data : {nameRoom}
+          </ModalBody>
+          <ModalFooter>
+            <div className="sm:block">
+              <Button layout="outline" onClick={closeModal}>
+                Cancel
+              </Button>
+            </div>
+            <div className="sm:block">
+              <Button block onClick={deleteModal}>
+                Accept
+              </Button>
+            </div>
+          </ModalFooter>
+        </Modal>
       </div>
 
     </>

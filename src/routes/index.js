@@ -4,10 +4,11 @@ import { lazy } from 'react'
 const Dashboard = lazy(() => import('../pages/dashboard/Dashboard'))
 const Rooms = lazy(() => import('../pages/room/Room'))
 const RoomsUser = lazy(() => import('../pages/room/RoomUser'))
-const RoomManage = lazy(() => import('../pages/room/RoomManage'))
+const RoomAdd = lazy(() => import('../pages/room/RoomAdd'))
+const RoomEdit = lazy(() => import('../pages/room/RoomEdit'))
 const Reservation = lazy(() => import('../pages/reservation/Reservation'))
 const ReservationUser = lazy(() => import('../pages/reservation/ReservationUser'))
-const ReservatioManage = lazy(() => import('../pages/reservation/ReservatioManage'))
+const ReservatioManage = lazy(() => import('../pages/reservation/ReservationManage'))
 const Report = lazy(() => import('../pages/report/Report'))
 // SAMPLE
 const DashboardSample = lazy(() => import('../pages/Dashboard'))
@@ -33,34 +34,47 @@ const Blank = lazy(() => import('../pages/Blank'))
 const routes = [
   {
     path: '/dashboard',
+    role: 'all',
     component: Dashboard,
   },
   {
     path: '/room',
+    role: 'admin',
     component: Rooms,
   },
   {
     path: '/room-user',
+    role: 'user',
     component: RoomsUser,
   },
   {
-    path: '/room/manage',
-    component: RoomManage,
+    path: '/room/add',
+    role: 'admin',
+    component: RoomAdd,
+  },
+  {
+    path: '/room/edit/:id',
+    role: 'admin',
+    component: RoomEdit,
   },
   {
     path: '/reservation',
+    role: 'admin',
     component: Reservation,
   },
   {
     path: '/reservation-user',
+    role: 'user',
     component: ReservationUser,
   },
   {
-    path: '/reservation/manage',
+    path: '/reservation/manage/:id',
+    role: 'user',
     component: ReservatioManage,
   },
   {
     path: '/report',
+    role: 'all',
     component: Report,
   },
   {
@@ -85,6 +99,7 @@ const routes = [
   },
   {
     path: '/modals',
+    role: 'all',
     component: Modals,
   },
   {
@@ -93,6 +108,7 @@ const routes = [
   },
   {
     path: '/404',
+    role: 'all',
     component: Page404,
   },
   {

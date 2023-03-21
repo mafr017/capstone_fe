@@ -8,31 +8,37 @@
 const routes = [
   {
     path: '/app/dashboard',
+    role: 'all',
     icon: 'HomeIcon',
     name: 'Dashboard',
   },
   {
     path: '/app/room',
+    role: 'admin',
     icon: 'PeopleRoof',
     name: 'Rooms',
   },
   {
     path: '/app/room-user',
+    role: 'user',
     icon: 'PeopleRoof',
     name: 'Rooms User',
   },
   {
     path: '/app/reservation',
+    role: 'admin',
     icon: 'ChalkBoardUserIcon',
     name: 'Reservations',
   },
   {
     path: '/app/reservation-user',
+    role: 'user',
     icon: 'ChalkBoardUserIcon',
     name: 'Reservations User',
   },
   {
     path: '/app/report',
+    role: 'all',
     icon: 'FormsIcon',
     name: 'Report',
   },

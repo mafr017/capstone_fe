@@ -32,6 +32,7 @@ import { ReactComponent as Check } from './check.svg'
 import { ReactComponent as Cross } from './cross.svg'
 import { ReactComponent as CalendarIcon } from './calendar.svg'
 import { ReactComponent as ChalkBoardUserIcon } from './chalkboardUser.svg'
+import { ReactComponent as BackIcon } from './back.svg'
 
 export {
   ButtonsIcon,
@@ -67,5 +68,6 @@ export {
   Check,
   Cross,
   CalendarIcon,
-  ChalkBoardUserIcon
+  ChalkBoardUserIcon,
+  BackIcon
 }
