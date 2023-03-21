@@ -14,6 +14,7 @@ import {
     Badge,
     Pagination,
     Label,
+    Modal, ModalHeader, ModalBody, ModalFooter
 } from '@windmill/react-ui'
 
 import { Check, Cross, Plus, SearchIcon } from '../../icons'
@@ -23,9 +24,21 @@ function Reservation() {
     const [pageTable2, setPageTable2] = useState(1)
     const [dataTable2, setDataTable2] = useState([])
     const navigate = useHistory();
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isAccepted, isAcceptedSet] = useState(false)
+    const [message, messageSet] = useState("")
 
     const goAddRoom = () => {
         navigate.push("/app/reservation/manage")
+    }
+    function openModal(param, isAccepted) {
+        isAcceptedSet(() => isAccepted)
+        messageSet(() => "{ id: " + param.id + ", room: " + param.room + ", date: " + new Date(param.date).toLocaleDateString() + " }")
+        setIsModalOpen(true)
+    }
+
+    function closeModal() {
+        setIsModalOpen(false)
     }
 
     // pagination setup
@@ -87,34 +100,51 @@ function Reservation() {
                                         <span className="text-sm">{i + 1}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.amount}</span>
+                                        <span className="text-sm">{user.id}</span>
                                     </TableCell>
                                     <TableCell>
                                         <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{new Date(user.startTime).toLocaleTimeString()}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{new Date(user.endTime).toLocaleTimeString()}</span>
                                     </TableCell>
                                     <TableCell>
                                         <span className="text-sm">{user.name}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.job}</span>
+                                        <span className="text-sm">{user.room}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge type={user.status}>{user.status}</Badge>
+                                        <Badge type={user.status == "Accepted" ? "success"
+                                            : (user.status == "Pending" ? "primary"
+                                                : (user.status == "Refused" ? "danger" : "base"))}
+                                        >{user.status}</Badge>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center space-x-4">
-                                            <Button layout="link" size="icon" aria-label="Edit">
-                                                <Check className="w-5 h-5 text-green-500" aria-hidden="true" />
-                                            </Button>
-                                            <Button layout="link" size="icon" aria-label="Delete">
-                                                <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
-                                            </Button>
+                                            {
+                                                user.status == "Pending" ?
+                                                    <div>
+                                                        <Button layout="link" size="icon" aria-label="accept" onClick={() => openModal(user, true)}>
+                                                            <Check className="w-5 h-5 text-green-500" aria-hidden="true" />
+                                                        </Button>
+                                                        <Button layout="link" size="icon" aria-label="refuse" onClick={() => openModal(user, false)}>
+                                                            <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
+                                                        </Button>
+                                                    </div>
+                                                    :
+                                                    user.status == "Accepted" ?
+                                                        <Button layout="link" size="icon" aria-label="accept" onClick={() => openModal(user, false)}>
+                                                            <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
+                                                        </Button>
+                                                        :
+                                                        <Button layout="link" size="icon" aria-label="refuse" onClick={() => openModal(user, true)}>
+                                                            <Check className="w-5 h-5 text-green-500" aria-hidden="true" />
+                                                        </Button>
+                                            }
                                         </div>
                                     </TableCell>
                                 </TableRow>
@@ -131,6 +161,23 @@ function Reservation() {
                     </TableFooter>
                 </TableContainer>
             </div>
+
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+                <ModalHeader>Are you sure to {isAccepted ? "accept" : "refuse"} reservation?</ModalHeader>
+                <ModalBody>{message}</ModalBody>
+                <ModalFooter>
+                    <div className="sm:block text-center">
+                        <Button layout="primary" onClick={closeModal}>
+                            No
+                        </Button>
+                    </div>
+                    <div className="sm:block text-center">
+                        <Button layout="outline" onClick={closeModal}>
+                            Yes
+                        </Button>
+                    </div>
+                </ModalFooter>
+            </Modal>
 
         </>
     )

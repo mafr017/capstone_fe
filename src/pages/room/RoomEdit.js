@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import PageTitle from '../../components/Typography/PageTitle'
 import { Button, Label, Select, Modal, ModalHeader, ModalBody, ModalFooter } from '@windmill/react-ui'
 
-import { HomeIcon, Plus } from '../../icons'
+import { BackIcon, HomeIcon, Plus } from '../../icons'
 import { useHistory, useParams } from 'react-router-dom'
 import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
 import { useForm } from 'react-hook-form'
@@ -48,7 +48,7 @@ function RoomEdit() {
 
     const getData = async (page) => {
         const dataRoom = await fetchData(null, `/api/v1/rooms/${id}`, `GET`);
-        if (dataRoom) {
+        if (dataRoom?.httpStatus) {
             setValue('nameRoom', dataRoom?.data.nameRoom);
             setValue('capacity', dataRoom?.data.capacity);
             setValue('idType', dataRoom?.data.typeRoom.id);
@@ -61,7 +61,7 @@ function RoomEdit() {
 
     const getDataTypeRoom = async (page) => {
         const dataTypeRoom = await fetchData(null, `/api/v1/type-room`, `GET`);
-        if (dataTypeRoom) {
+        if (dataTypeRoom?.httpStatus) {
             dataTypeRoomSet(() => dataTypeRoom?.data)
         } else {
             alert("Get data Failed!")
@@ -165,7 +165,7 @@ function RoomEdit() {
 
                     <div className='flex justify-center gap-4 mb-5 mt-4'>
                         <div>
-                            <Button iconRight={Plus} onClick={backToRoom}>
+                            <Button iconRight={BackIcon} onClick={backToRoom}>
                                 <span>Back</span>
                             </Button>
                         </div>
@@ -179,7 +179,7 @@ function RoomEdit() {
             </div>
 
             <Modal isOpen={isModalOpen} onClose={closeModal}>
-                <ModalHeader>Create Room {isSuccess ? "Success" : "Failed"} !</ModalHeader>
+                <ModalHeader>Edit Room {isSuccess ? "Success" : "Failed"} !</ModalHeader>
                 {
                     message != "" ?
                         <ModalBody>

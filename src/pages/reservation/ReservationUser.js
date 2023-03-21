@@ -14,21 +14,36 @@ import {
     Badge,
     Pagination,
     Label,
+    Modal, ModalHeader, ModalBody, ModalFooter
 } from '@windmill/react-ui'
 
 import { Cross, SearchIcon } from '../../icons'
 import { useHistory } from 'react-router-dom'
 
 function ReservationUser() {
+
+    const navigate = useHistory();
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isSuccess, isSuccessSet] = useState(false)
+    const [message, messageSet] = useState("")
+
     const [pageTable2, setPageTable2] = useState(1)
     const [dataTable2, setDataTable2] = useState([])
-    const navigate = useHistory();
 
     // pagination setup
     const resultsPerPage = 10
     const totalResults = response.length
 
     // pagination change control
+    function openModal(param) {
+        messageSet(() => "{ id: " + param.id + ", room: " + param.room + ", date: " + new Date(param.date).toLocaleDateString() + " }")
+        setIsModalOpen(true)
+    }
+
+    function closeModal() {
+        setIsModalOpen(false)
+    }
+
     function onPageChangeTable2(p) {
         setPageTable2(p)
     }
@@ -83,31 +98,41 @@ function ReservationUser() {
                                         <span className="text-sm">{i + 1}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.amount}</span>
+                                        <span className="text-sm">{user.id}</span>
                                     </TableCell>
                                     <TableCell>
                                         <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{new Date(user.startTime).toLocaleTimeString()}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{new Date(user.endTime).toLocaleTimeString()}</span>
                                     </TableCell>
                                     <TableCell>
                                         <span className="text-sm">{user.name}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.job}</span>
+                                        <span className="text-sm">{user.room}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge type={user.status}>{user.status}</Badge>
+                                        <Badge type={user.status == "Accepted" ? "success"
+                                            : (user.status == "Pending" ? "primary"
+                                                : (user.status == "Refused" ? "danger" : "base"))}
+                                        >{user.status}</Badge>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center justify-center">
-                                            <Button layout="link" size="icon" aria-label="Cancel">
-                                                <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
-                                            </Button>
+                                            {
+                                                user.status != "Refused" ?
+                                                    <Button layout="link" size="icon" aria-label="Cancel" onClick={() => openModal(user)}>
+                                                        <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
+                                                    </Button>
+                                                    :
+                                                    <Button layout="link" size="icon" aria-label="Cancel" disabled>
+                                                        <Cross className="w-5 h-5 text-gray-500" aria-hidden="true" />
+                                                    </Button>
+                                            }
                                         </div>
                                     </TableCell>
                                 </TableRow>
@@ -124,6 +149,23 @@ function ReservationUser() {
                     </TableFooter>
                 </TableContainer>
             </div>
+
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+                <ModalHeader>Are you sure to reject reservation?</ModalHeader>
+                <ModalBody>{message}</ModalBody>
+                <ModalFooter>
+                    <div className="sm:block text-center">
+                        <Button layout="primary" onClick={closeModal}>
+                            No
+                        </Button>
+                    </div>
+                    <div className="sm:block text-center">
+                        <Button layout="outline" onClick={closeModal}>
+                            Yes
+                        </Button>
+                    </div>
+                </ModalFooter>
+            </Modal>
 
         </>
     )

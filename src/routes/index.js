@@ -8,7 +8,7 @@ const RoomAdd = lazy(() => import('../pages/room/RoomAdd'))
 const RoomEdit = lazy(() => import('../pages/room/RoomEdit'))
 const Reservation = lazy(() => import('../pages/reservation/Reservation'))
 const ReservationUser = lazy(() => import('../pages/reservation/ReservationUser'))
-const ReservatioManage = lazy(() => import('../pages/reservation/ReservatioManage'))
+const ReservatioManage = lazy(() => import('../pages/reservation/ReservationManage'))
 const Report = lazy(() => import('../pages/report/Report'))
 // SAMPLE
 const DashboardSample = lazy(() => import('../pages/Dashboard'))
@@ -68,7 +68,7 @@ const routes = [
     component: ReservationUser,
   },
   {
-    path: '/reservation/manage',
+    path: '/reservation/manage/:id',
     role: 'user',
     component: ReservatioManage,
   },

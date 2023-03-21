@@ -19,23 +19,19 @@ import { useHistory } from 'react-router-dom'
 function RoomsUser() {
     // State
     const navigate = useHistory();
-    const [isModalOpen, setIsModalOpen] = useState(false)
     const [dataTable2, setDataTable2] = useState([])
     const [resultsPerPage, setResultsPerPage] = useState(6)
     const [totalOfPages, setTotalOfPages] = useState(4)
-    const [nameRoom, setNameRoom] = useState("")
-    const [idRoom, setIdRoom] = useState(0)
 
-    const goAddRoom = () => {
-        navigate.push("/app/reservation/manage")
+    const goAddRoom = (id) => {
+        navigate.push(`/app/reservation/manage/${id}`)
     }
-
 
     // Hooks
     const { fetchData } = useFetcherGlobal();
     const getData = async (page) => {
         const dataRoom = await fetchData(null, `/api/v1/rooms/pagination?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
-        if (dataRoom) {
+        if (dataRoom?.httpStatus) {
             setDataTable2(dataRoom?.data.data)
             setResultsPerPage(() => 5)
             setTotalOfPages(() => dataRoom?.data?.totalOfItems)
@@ -75,7 +71,7 @@ function RoomsUser() {
                             {dataTable2.map((user, i) => (
                                 <TableRow key={i}>
                                     <TableCell>
-                                        <span className="text-sm">{i + 1}</span>
+                                        <span className="text-sm">{user.id}</span>
                                     </TableCell>
                                     <TableCell>
                                         <span className="text-sm">{user.nameRoom}</span>
@@ -94,7 +90,7 @@ function RoomsUser() {
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center space-x-4">
-                                            <Button layout="outline" aria-label="Edit" onClick={goAddRoom}>
+                                            <Button layout="outline" aria-label="Edit" onClick={() => goAddRoom(user.id)}>
                                                 Book
                                             </Button>
                                         </div>

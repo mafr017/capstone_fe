@@ -41,7 +41,7 @@ function Rooms() {
   const { fetchData } = useFetcherGlobal();
   const getData = async (page) => {
     const dataRoom = await fetchData(null, `/api/v1/rooms/pagination?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
-    if (dataRoom) {
+    if (dataRoom?.httpStatus) {
       setDataTable2(dataRoom?.data.data)
       setResultsPerPage(() => 5)
       setTotalOfPages(() => dataRoom?.data?.totalOfItems)
@@ -63,7 +63,7 @@ function Rooms() {
 
   function deleteModal() {
     let response = fetchData(null, `/api/v1/rooms/${idRoom}`, `DELETE`);
-    if (response) {
+    if (response?.httpStatus) {
       console.log("SUCCESS DELETE ID: " + idRoom);
     } else {
       alert("Get data Failed!")

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import PageTitle from '../../components/Typography/PageTitle'
 import { Button, Label, Select, Modal, ModalHeader, ModalBody, ModalFooter } from '@windmill/react-ui'
 
-import { HomeIcon, Plus } from '../../icons'
+import { BackIcon, HomeIcon, Plus } from '../../icons'
 import { useHistory } from 'react-router-dom'
 import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
 import { useForm } from 'react-hook-form'
@@ -145,7 +145,7 @@ function RoomAdd() {
 
                     <div className='flex justify-center gap-4 mb-5 mt-4'>
                         <div>
-                            <Button iconRight={Plus} onClick={backToRoom}>
+                            <Button iconRight={BackIcon} onClick={backToRoom}>
                                 <span>Back</span>
                             </Button>
                         </div>
