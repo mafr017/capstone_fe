@@ -33,6 +33,6 @@ export default [
     endTime: 'Mon Mar 20 2023 08:00:00 GMT+07:00',
     name: 'Chandler Jacobi',
     room: 'UIT 1',
-    status: 'Refused',
+    status: 'Rejected',
   },
 ]

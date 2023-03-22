@@ -32,6 +32,7 @@ function ReservationUser() {
     const [dataTable2, setDataTable2] = useState([])
     const [resultsPerPage, setResultsPerPage] = useState(6)
     const [totalOfPages, setTotalOfPages] = useState(4)
+    const [idReservation, idReservationSet] = useState(0)
 
     // Hooks
     const { fetchData } = useFetcherGlobal();
@@ -48,12 +49,24 @@ function ReservationUser() {
 
     // pagination change control
     function openModal(param) {
-        messageSet(() => "{ id: " + param.id + ", room: " + param.room + ", date: " + new Date(param.date).toLocaleDateString() + " }")
+        messageSet(() => "{ id: " + param.id + ", room: " + param.nameRoom + ", date: " + param.reservationDate + " }")
+        idReservationSet(() => param.id)
         setIsModalOpen(true)
     }
 
     function closeModal() {
         setIsModalOpen(false)
+    }
+
+    const handleReject = async () => {
+        let response = await fetchData(null, `/api/v1/reservation/reject/${idReservation}`, `GET`);
+        if (response?.httpStatus) {
+            openModal(true)
+        } else {
+            alert(response?.response?.data?.data)
+        }
+        setIsModalOpen(false)
+        onPageChangeTable2(1)
     }
 
     // pagination change control
@@ -127,19 +140,18 @@ function ReservationUser() {
                                     </TableCell>
                                     <TableCell>
                                         <Badge type={user.status == "Accepted" ? "success"
-                                            : (user.status == "Pending" ? "primary"
-                                                : (user.status == "Refused" ? "danger" : "base"))}
+                                            : (user.status == "Rejected" ? "danger" : "base")}
                                         >{user.status}</Badge>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center justify-center">
                                             {
-                                                user.status != "Refused" ?
-                                                    <Button layout="link" size="icon" aria-label="Cancel" onClick={() => openModal(user)}>
+                                                user.status != "Rejected" ?
+                                                    <Button layout="link" size="icon" aria-label="reject" onClick={() => openModal(user)}>
                                                         <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
                                                     </Button>
                                                     :
-                                                    <Button layout="link" size="icon" aria-label="Cancel" disabled>
+                                                    <Button layout="link" size="icon" aria-label="reject" disabled>
                                                         <Cross className="w-5 h-5 text-gray-500" aria-hidden="true" />
                                                     </Button>
                                             }
@@ -161,7 +173,7 @@ function ReservationUser() {
             </div>
 
             <Modal isOpen={isModalOpen} onClose={closeModal}>
-                <ModalHeader>Are you sure to refuse reservation?</ModalHeader>
+                <ModalHeader>Are you sure to reject reservation?</ModalHeader>
                 <ModalBody>{message}</ModalBody>
                 <ModalFooter>
                     <div className="sm:block text-center">
@@ -170,7 +182,7 @@ function ReservationUser() {
                         </Button>
                     </div>
                     <div className="sm:block text-center">
-                        <Button layout="outline" onClick={closeModal}>
+                        <Button layout="outline" onClick={handleReject}>
                             Yes
                         </Button>
                     </div>

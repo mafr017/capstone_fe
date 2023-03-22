@@ -129,7 +129,7 @@ function Report() {
                                     <TableCell>
                                         <Badge type={user.status == "Accepted" ? "success"
                                             : (user.status == "Pending" ? "primary"
-                                                : (user.status == "Refused" ? "danger" : "base"))}
+                                                : (user.status == "Rejected" ? "danger" : "base"))}
                                         >{user.status}</Badge>
                                     </TableCell>
                                 </TableRow>

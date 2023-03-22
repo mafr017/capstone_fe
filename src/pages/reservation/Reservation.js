@@ -31,6 +31,7 @@ function Reservation() {
     const [message, messageSet] = useState("")
     const [resultsPerPage, setResultsPerPage] = useState(6)
     const [totalOfPages, setTotalOfPages] = useState(4)
+    const [idReservation, idReservationSet] = useState(0)
 
     // Hooks
     const { fetchData } = useFetcherGlobal();
@@ -54,12 +55,24 @@ function Reservation() {
     }
     function openModal(param, isAccepted) {
         isAcceptedSet(() => isAccepted)
-        messageSet(() => "{ id: " + param.id + ", room: " + param.room + ", date: " + new Date(param.date).toLocaleDateString() + " }")
+        messageSet(() => "{ id: " + param.id + ", room: " + param.nameRoom + ", date: " + param.reservationDate + " }")
+        idReservationSet(() => param.id)
         setIsModalOpen(true)
     }
 
     function closeModal() {
         setIsModalOpen(false)
+    }
+
+    const handleAccept = async () => {
+        let response = await fetchData(null, `/api/v1/reservation/${isAccepted ? `accept` : `reject`}/${idReservation}`, `GET`);
+        if (response?.httpStatus) {
+            openModal(true)
+        } else {
+            alert(response?.response?.data?.data)
+        }
+        setIsModalOpen(false)
+        onPageChangeTable2(1)
     }
 
     // pagination change control
@@ -134,30 +147,20 @@ function Reservation() {
                                     <TableCell>
                                         <Badge type={user.status == "Accepted" ? "success"
                                             : (user.status == "Pending" ? "primary"
-                                                : (user.status == "Refused" ? "danger" : "base"))}
+                                                : (user.status == "Rejected" ? "danger" : "base"))}
                                         >{user.status}</Badge>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center space-x-4">
                                             {
-                                                user.status == "Pending" ?
-                                                    <div>
-                                                        <Button layout="link" size="icon" aria-label="accept" onClick={() => openModal(user, true)}>
-                                                            <Check className="w-5 h-5 text-green-500" aria-hidden="true" />
-                                                        </Button>
-                                                        <Button layout="link" size="icon" aria-label="refuse" onClick={() => openModal(user, false)}>
-                                                            <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
-                                                        </Button>
-                                                    </div>
+                                                user.status == "Accepted" ?
+                                                    <Button layout="link" size="icon" aria-label="reject" onClick={() => openModal(user, false)}>
+                                                        <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
+                                                    </Button>
                                                     :
-                                                    user.status == "Accepted" ?
-                                                        <Button layout="link" size="icon" aria-label="accept" onClick={() => openModal(user, false)}>
-                                                            <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
-                                                        </Button>
-                                                        :
-                                                        <Button layout="link" size="icon" aria-label="refuse" onClick={() => openModal(user, true)}>
-                                                            <Check className="w-5 h-5 text-green-500" aria-hidden="true" />
-                                                        </Button>
+                                                    <Button layout="link" size="icon" aria-label="accept" onClick={() => openModal(user, true)}>
+                                                        <Check className="w-5 h-5 text-green-500" aria-hidden="true" />
+                                                    </Button>
                                             }
                                         </div>
                                     </TableCell>
@@ -177,7 +180,7 @@ function Reservation() {
             </div>
 
             <Modal isOpen={isModalOpen} onClose={closeModal}>
-                <ModalHeader>Are you sure to {isAccepted ? "accept" : "refuse"} reservation?</ModalHeader>
+                <ModalHeader>Are you sure to {isAccepted ? "accept" : "reject"} reservation?</ModalHeader>
                 <ModalBody>{message}</ModalBody>
                 <ModalFooter>
                     <div className="sm:block text-center">
@@ -186,7 +189,7 @@ function Reservation() {
                         </Button>
                     </div>
                     <div className="sm:block text-center">
-                        <Button layout="outline" onClick={closeModal}>
+                        <Button layout="outline" onClick={handleAccept}>
                             Yes
                         </Button>
                     </div>
