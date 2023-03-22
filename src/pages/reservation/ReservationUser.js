@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import PageTitle from '../../components/Typography/PageTitle'
-import response from '../../utils/demo/tableData'
+import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
 import {
     Button,
     TableBody,
@@ -19,6 +19,7 @@ import {
 
 import { Cross, SearchIcon } from '../../icons'
 import { useHistory } from 'react-router-dom'
+import Cookies from 'js-cookie';
 
 function ReservationUser() {
 
@@ -29,10 +30,21 @@ function ReservationUser() {
 
     const [pageTable2, setPageTable2] = useState(1)
     const [dataTable2, setDataTable2] = useState([])
+    const [resultsPerPage, setResultsPerPage] = useState(6)
+    const [totalOfPages, setTotalOfPages] = useState(4)
 
-    // pagination setup
-    const resultsPerPage = 10
-    const totalResults = response.length
+    // Hooks
+    const { fetchData } = useFetcherGlobal();
+    const getData = async (page) => {
+        const dataRoom = await fetchData(null, `/api/v1/reservation/${Cookies.get("id")}?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
+        if (dataRoom?.httpStatus) {
+            setDataTable2(dataRoom?.data.data)
+            setResultsPerPage(() => 5)
+            setTotalOfPages(() => dataRoom?.data?.totalOfItems)
+        } else {
+            alert("Get data Failed!")
+        }
+    }
 
     // pagination change control
     function openModal(param) {
@@ -44,15 +56,13 @@ function ReservationUser() {
         setIsModalOpen(false)
     }
 
+    // pagination change control
     function onPageChangeTable2(p) {
-        setPageTable2(p)
+        getData(p)
     }
 
-    // on page change, load new sliced data
-    // here you would make another server request for new data
     useEffect(() => {
-        setDataTable2(response.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-    }, [pageTable2])
+    }, [resultsPerPage, totalOfPages])
 
     return (
         <>
@@ -101,19 +111,19 @@ function ReservationUser() {
                                         <span className="text-sm">{user.id}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                                        <span className="text-sm">{user.reservationDate}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.startTime).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{user.startTime} WIB</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.endTime).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{user.endTime} WIB</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.name}</span>
+                                        <span className="text-sm">{user.nameUser}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.room}</span>
+                                        <span className="text-sm">{user.nameRoom}</span>
                                     </TableCell>
                                     <TableCell>
                                         <Badge type={user.status == "Accepted" ? "success"
@@ -141,8 +151,8 @@ function ReservationUser() {
                     </Table>
                     <TableFooter>
                         <Pagination
-                            totalResults={totalResults}
-                            resultsPerPage={resultsPerPage}
+                            totalResults={totalOfPages}
+                            resultsPerPage={5}
                             onChange={onPageChangeTable2}
                             label="Table navigation"
                         />
@@ -151,7 +161,7 @@ function ReservationUser() {
             </div>
 
             <Modal isOpen={isModalOpen} onClose={closeModal}>
-                <ModalHeader>Are you sure to reject reservation?</ModalHeader>
+                <ModalHeader>Are you sure to refuse reservation?</ModalHeader>
                 <ModalBody>{message}</ModalBody>
                 <ModalFooter>
                     <div className="sm:block text-center">

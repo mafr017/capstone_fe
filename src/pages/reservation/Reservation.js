@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import PageTitle from '../../components/Typography/PageTitle'
+import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
 import response from '../../utils/demo/tableData'
 import {
     Button,
@@ -19,6 +20,7 @@ import {
 
 import { Check, Cross, Plus, SearchIcon } from '../../icons'
 import { useHistory } from 'react-router-dom'
+import Cookies from 'js-cookie';
 
 function Reservation() {
     const [pageTable2, setPageTable2] = useState(1)
@@ -27,6 +29,25 @@ function Reservation() {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isAccepted, isAcceptedSet] = useState(false)
     const [message, messageSet] = useState("")
+    const [resultsPerPage, setResultsPerPage] = useState(6)
+    const [totalOfPages, setTotalOfPages] = useState(4)
+
+    // Hooks
+    const { fetchData } = useFetcherGlobal();
+    const getData = async (page) => {
+        var paramUrl = ``
+        if (Cookies.get("role") == "user") {
+            paramUrl = `/${Cookies.get("id")}`
+        }
+        const dataRoom = await fetchData(null, `/api/v1/reservation${paramUrl}?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
+        if (dataRoom?.httpStatus) {
+            setDataTable2(dataRoom?.data.data)
+            setResultsPerPage(() => 5)
+            setTotalOfPages(() => dataRoom?.data?.totalOfItems)
+        } else {
+            alert("Get data Failed!")
+        }
+    }
 
     const goAddRoom = () => {
         navigate.push("/app/reservation/manage")
@@ -41,20 +62,13 @@ function Reservation() {
         setIsModalOpen(false)
     }
 
-    // pagination setup
-    const resultsPerPage = 10
-    const totalResults = response.length
-
     // pagination change control
     function onPageChangeTable2(p) {
-        setPageTable2(p)
+        getData(p)
     }
 
-    // on page change, load new sliced data
-    // here you would make another server request for new data
     useEffect(() => {
-        setDataTable2(response.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-    }, [pageTable2])
+    }, [resultsPerPage, totalOfPages])
 
     return (
         <>
@@ -103,19 +117,19 @@ function Reservation() {
                                         <span className="text-sm">{user.id}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                                        <span className="text-sm">{user.reservationDate}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.startTime).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{user.startTime} WIB</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.endTime).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{user.endTime} WIB</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.name}</span>
+                                        <span className="text-sm">{user.nameUser}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.room}</span>
+                                        <span className="text-sm">{user.nameRoom}</span>
                                     </TableCell>
                                     <TableCell>
                                         <Badge type={user.status == "Accepted" ? "success"
@@ -153,8 +167,8 @@ function Reservation() {
                     </Table>
                     <TableFooter>
                         <Pagination
-                            totalResults={totalResults}
-                            resultsPerPage={resultsPerPage}
+                            totalResults={totalOfPages}
+                            resultsPerPage={5}
                             onChange={onPageChangeTable2}
                             label="Table navigation"
                         />

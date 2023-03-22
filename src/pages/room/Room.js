@@ -61,8 +61,10 @@ function Rooms() {
     setIsModalOpen(false)
   }
 
-  function deleteModal() {
-    let response = fetchData(null, `/api/v1/rooms/${idRoom}`, `DELETE`);
+  async function deleteModal() {
+    let response = await fetchData(null, `/api/v1/rooms/${idRoom}`, `DELETE`);
+    console.log("DELETE");
+    console.log(response);
     if (response?.httpStatus) {
       console.log("SUCCESS DELETE ID: " + idRoom);
     } else {

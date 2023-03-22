@@ -7,6 +7,7 @@ import { CalendarIcon, HomeIcon, Plus, BackIcon } from '../../icons'
 import { useHistory, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
+import Cookies from 'js-cookie'
 
 export default function ReservationManage() {
 
@@ -21,7 +22,6 @@ export default function ReservationManage() {
     const [resTime, resTimeSet] = useState()
     const [startDate, setStartDate] = useState(new Date());
 
-    console.log(useParams().id);
     const id = useParams().id + ""
 
     const time = [
@@ -56,7 +56,6 @@ export default function ReservationManage() {
     const getData = async (page) => {
         const dataRoom = await fetchData(null, `/api/v1/rooms/${id}`, `GET`);
         if (dataRoom?.httpStatus) {
-            console.log(dataRoom?.data.nameRoom);
             nameSet(() => dataRoom?.data.nameRoom);
             idRoomSet(() => dataRoom?.data.id)
         } else {
@@ -69,7 +68,6 @@ export default function ReservationManage() {
         if (dataTime?.httpStatus) {
             if (dataTime?.data != null) {
                 resTimeSet(() => dataTime?.data)
-                console.log(dataTime?.data);
                 if (dataTime?.data.jam_07 != null) changeStartTime(1)
                 if (dataTime?.data.jam_08 != null) changeStartTime(2)
                 if (dataTime?.data.jam_09 != null) changeStartTime(3)
@@ -91,7 +89,6 @@ export default function ReservationManage() {
         } else {
             startTimeeSet(() => time)
         }
-        console.log(startTimee);
     }
 
     // Func
@@ -105,8 +102,16 @@ export default function ReservationManage() {
     }
 
     const handleRegister = async (data) => {
-        console.log(data);
-        setIsModalOpen(true)
+        data.idUser = parseInt(Cookies.get("id"))
+        data.idRoom = idRoom
+        let response = await fetchData(data, `/api/v1/reservation`, `POST`);
+        reset();
+        if (response?.httpStatus) {
+            openModal(true)
+        } else {
+            messageSet(() => response?.response?.data?.data)
+            openModal(false)
+        }
     }
 
     const onChangeDate = (data) => {
@@ -188,7 +193,7 @@ export default function ReservationManage() {
                             <option value={""} disabled selected>Select Time</option>
                             {
                                 startTimee.map((time, i) => (
-                                    <option value={time.id} key={i}>{time.name}</option>
+                                    <option value={time.name} key={i}>{time.name}</option>
                                 ))
                             }
                         </Select>
@@ -201,7 +206,7 @@ export default function ReservationManage() {
                         >
                             <option value={""} disabled selected>Select Time</option>
                             {endTime.map((time, i) => (
-                                <option value={time.id} key={i}>{time.name}</option>
+                                <option value={time.name} key={i}>{time.name}</option>
                             ))}
                         </Select>
                         {errors.availableMonth && <span className='text-red-600 mt-1'>{errors?.availableMonth?.message}</span>}

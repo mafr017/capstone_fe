@@ -78,6 +78,11 @@ function Header() {
             >
               <DropdownItem onClick={() => {
                 Cookies.remove("token");
+                Cookies.remove("firstName");
+                Cookies.remove("email");
+                Cookies.remove("username");
+                Cookies.remove("id");
+                Cookies.remove("lastName");
                 window.location.reload();
               }}>
                 <OutlineLogoutIcon className="w-4 h-4 mr-3" aria-hidden="true" />

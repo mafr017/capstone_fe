@@ -34,6 +34,8 @@ function Login({ loginSet }) {
     console.log(dataa);
     let response = await fetchDataAuth(dataa, `/api/v1/auth/login`, `POST`);
     reset();
+    console.log("response");
+    console.log(response);
     if (response?.httpStatus) {
       // Set Cookies Data User
       Cookies.set("id", response.data.id);

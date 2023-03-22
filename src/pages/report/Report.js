@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import PageTitle from '../../components/Typography/PageTitle'
+import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
 import response from '../../utils/demo/tableData'
 import {
     Button,
@@ -17,25 +18,38 @@ import {
 } from '@windmill/react-ui'
 
 import { CalendarIcon, Check, Cross } from '../../icons'
+import Cookies from 'js-cookie'
 
 function Report() {
     const [pageTable2, setPageTable2] = useState(1)
     const [dataTable2, setDataTable2] = useState([])
+    const [resultsPerPage, setResultsPerPage] = useState(6)
+    const [totalOfPages, setTotalOfPages] = useState(4)
 
-    // pagination setup
-    const resultsPerPage = 10
-    const totalResults = response.length
+    // Hooks
+    const { fetchData } = useFetcherGlobal();
+    const getData = async (page) => {
+        var paramUrl = ``
+        if (Cookies.get("role") == "user") {
+            paramUrl = `/${Cookies.get("id")}`
+        }
+        const dataRoom = await fetchData(null, `/api/v1/reservation${paramUrl}?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
+        if (dataRoom?.httpStatus) {
+            setDataTable2(dataRoom?.data.data)
+            setResultsPerPage(() => 5)
+            setTotalOfPages(() => dataRoom?.data?.totalOfItems)
+        } else {
+            alert("Get data Failed!")
+        }
+    }
 
     // pagination change control
     function onPageChangeTable2(p) {
-        setPageTable2(p)
+        getData(p)
     }
 
-    // on page change, load new sliced data
-    // here you would make another server request for new data
     useEffect(() => {
-        setDataTable2(response.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-    }, [pageTable2])
+    }, [resultsPerPage, totalOfPages])
 
     return (
         <>
@@ -98,19 +112,19 @@ function Report() {
                                         <span className="text-sm">{user.id}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                                        <span className="text-sm">{user.reservationDate}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.startTime).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{user.startTime} WIB</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.endTime).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{user.endTime} WIB</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.name}</span>
+                                        <span className="text-sm">{user.nameUser}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.room}</span>
+                                        <span className="text-sm">{user.nameRoom}</span>
                                     </TableCell>
                                     <TableCell>
                                         <Badge type={user.status == "Accepted" ? "success"
@@ -124,8 +138,8 @@ function Report() {
                     </Table>
                     <TableFooter>
                         <Pagination
-                            totalResults={totalResults}
-                            resultsPerPage={resultsPerPage}
+                            totalResults={totalOfPages}
+                            resultsPerPage={5}
                             onChange={onPageChangeTable2}
                             label="Table navigation"
                         />
