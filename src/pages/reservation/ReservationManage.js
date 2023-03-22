@@ -13,6 +13,7 @@ export default function ReservationManage() {
 
     const navigate = useHistory();
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
     const [isSuccess, isSuccessSet] = useState(false)
     const [message, messageSet] = useState("")
     const [name, nameSet] = useState("")
@@ -59,7 +60,7 @@ export default function ReservationManage() {
             nameSet(() => dataRoom?.data.nameRoom);
             idRoomSet(() => dataRoom?.data.id)
         } else {
-            alert("Get data Failed!")
+            openModalError(() => "Get data Failed!")
         }
     }
 
@@ -97,8 +98,14 @@ export default function ReservationManage() {
         setIsModalOpen(true)
     }
 
+    function openModalError(param) {
+        messageSet(() => param)
+        setIsModalErrorOpen(true)
+    }
+
     function closeModal() {
         setIsModalOpen(false)
+        setIsModalErrorOpen(false)
     }
 
     const handleRegister = async (data) => {
@@ -160,7 +167,7 @@ export default function ReservationManage() {
                         </div>
                         {errors.nameRoom && <span className='text-red-600 mt-1'>{errors?.nameRoom?.message}</span>}
                     </Label>
-                    <div className='mt-4'>
+                    <div className='mt-4 max-w-xs'>
                         <Label>
                             <span>Date</span>
                             <div className="relative text-gray-500 focus-within:text-purple-600">
@@ -182,7 +189,7 @@ export default function ReservationManage() {
 
                     <Label className="mt-4">
                         <span>Start Time</span>
-                        <Select className="mt-1" name="startTime" {...startTime}
+                        <Select className="mt-1 max-w-xs" name="startTime" {...startTime}
                             onChange={(e) => {
                                 startTime.onChange(e);
                                 onChangeStartTime(e)
@@ -202,7 +209,7 @@ export default function ReservationManage() {
 
                     <Label className="mt-4">
                         <span>End Time</span>
-                        <Select className="mt-1" name="endTime" {...register("endTime", { required: { value: true, message: "Start Time is Required!" } })}
+                        <Select className="mt-1 max-w-xs" name="endTime" {...register("endTime", { required: { value: true, message: "Start Time is Required!" } })}
                         >
                             <option value={""} disabled selected>Select Time</option>
                             {endTime.map((time, i) => (
@@ -214,7 +221,7 @@ export default function ReservationManage() {
 
                     <div className='flex justify-center gap-4 mb-5 mt-4'>
                         <div>
-                            <Button iconRight={BackIcon} onClick={backToRoom}>
+                            <Button iconLeft={BackIcon} onClick={backToRoom}>
                                 <span>Back</span>
                             </Button>
                         </div>
@@ -229,6 +236,24 @@ export default function ReservationManage() {
 
             <Modal isOpen={isModalOpen} onClose={closeModal}>
                 <ModalHeader>Reservation Room {isSuccess ? "Success" : "Failed"} !</ModalHeader>
+                {
+                    message != "" ?
+                        <ModalBody>
+                            {message}
+                        </ModalBody>
+                        : null
+                }
+                <ModalFooter>
+                    <div className="sm:block text-center">
+                        <Button layout="outline" onClick={closeModal}>
+                            OK
+                        </Button>
+                    </div>
+                </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
+                <ModalHeader>Something Happen with system!</ModalHeader>
                 {
                     message != "" ?
                         <ModalBody>

@@ -14,6 +14,7 @@ function RoomAdd() {
     const [dataTypeRoom, dataTypeRoomSet] = useState([]);
 
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
     const [isSuccess, isSuccessSet] = useState(false)
     const [message, messageSet] = useState("")
 
@@ -46,7 +47,7 @@ function RoomAdd() {
         if (dataRoom) {
             dataTypeRoomSet(() => dataRoom?.data)
         } else {
-            alert("Get data Failed!")
+            openModalError(() => "Get data Failed!")
         }
     }
 
@@ -56,8 +57,19 @@ function RoomAdd() {
         setIsModalOpen(true)
     }
 
+    function openModalError(param) {
+        messageSet(() => param)
+        setIsModalErrorOpen(true)
+    }
+
     function closeModal() {
         setIsModalOpen(false)
+        setIsModalErrorOpen(false)
+    }
+
+    function closeModalGoBack() {
+        setIsModalOpen(false)
+        backToRoom()
     }
 
     const handleRegister = async (data) => {
@@ -119,7 +131,7 @@ function RoomAdd() {
                     <Label className="mt-4">
                         <span>Type Room</span>
 
-                        <Select className="mt-1" name="idType" {...register("idType", {
+                        <Select className="mt-1 max-w-xs" name="idType" {...register("idType", {
                             required: { value: true, message: "Type Room is Required!" }
                         })}>
                             <option value={""} disabled selected>Select Type Room</option>
@@ -132,7 +144,7 @@ function RoomAdd() {
 
                     <Label className="mt-4">
                         <span>Available For Month</span>
-                        <Select className="mt-1" name="availableMonth" {...register("availableMonth", {
+                        <Select className="mt-1 max-w-xs" name="availableMonth" {...register("availableMonth", {
                             required: { value: true, message: "Available Month is Required!" }
                         })}>
                             <option value={""} disabled selected>Select Month</option>
@@ -145,7 +157,7 @@ function RoomAdd() {
 
                     <div className='flex justify-center gap-4 mb-5 mt-4'>
                         <div>
-                            <Button iconRight={BackIcon} onClick={backToRoom}>
+                            <Button iconLeft={BackIcon} onClick={backToRoom}>
                                 <span>Back</span>
                             </Button>
                         </div>
@@ -160,6 +172,24 @@ function RoomAdd() {
 
             <Modal isOpen={isModalOpen} onClose={closeModal}>
                 <ModalHeader>Create Room {isSuccess ? "Success" : "Failed"} !</ModalHeader>
+                {
+                    message != "" ?
+                        <ModalBody>
+                            {message}
+                        </ModalBody>
+                        : null
+                }
+                <ModalFooter>
+                    <div className="sm:block text-center">
+                        <Button layout="outline" onClick={isSuccess ? closeModalGoBack : closeModal}>
+                            OK
+                        </Button>
+                    </div>
+                </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
+                <ModalHeader>Something Happen with system!</ModalHeader>
                 {
                     message != "" ?
                         <ModalBody>

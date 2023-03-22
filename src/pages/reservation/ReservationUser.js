@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import moment from 'moment'
+import 'moment/locale/id'
 
 import PageTitle from '../../components/Typography/PageTitle'
 import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
@@ -26,6 +28,7 @@ function ReservationUser() {
     const navigate = useHistory();
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isSuccess, isSuccessSet] = useState(false)
+    const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
     const [message, messageSet] = useState("")
 
     const [pageTable2, setPageTable2] = useState(1)
@@ -43,7 +46,7 @@ function ReservationUser() {
             setResultsPerPage(() => 5)
             setTotalOfPages(() => dataRoom?.data?.totalOfItems)
         } else {
-            alert("Get data Failed!")
+            openModalError(() => "Get data Failed!")
         }
     }
 
@@ -54,8 +57,14 @@ function ReservationUser() {
         setIsModalOpen(true)
     }
 
+    function openModalError(param) {
+        messageSet(() => param)
+        setIsModalErrorOpen(true)
+    }
+
     function closeModal() {
         setIsModalOpen(false)
+        setIsModalErrorOpen(false)
     }
 
     const handleReject = async () => {
@@ -83,7 +92,7 @@ function ReservationUser() {
 
             <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
 
-                <div className='flex justify-between'>
+                {/* <div className='flex justify-between'>
                     <div className='w-1/4 mb-5 my-auto'>
                         <Label className="mt-4">
                             <div className="relative text-gray-500 focus-within:text-purple-600">
@@ -97,9 +106,9 @@ function ReservationUser() {
                             </div>
                         </Label>
                     </div>
-                </div>
+                </div> */}
 
-                <TableContainer className="mb-8">
+                <TableContainer className="mt-4 mb-8">
                     <Table>
                         <TableHeader>
                             <tr>
@@ -124,7 +133,7 @@ function ReservationUser() {
                                         <span className="text-sm">{user.id}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.reservationDate}</span>
+                                        <span className="text-sm">{moment(user.reservationDate).format('LL')}</span>
                                     </TableCell>
                                     <TableCell>
                                         <span className="text-sm">{user.startTime} WIB</span>
@@ -184,6 +193,24 @@ function ReservationUser() {
                     <div className="sm:block text-center">
                         <Button layout="outline" onClick={handleReject}>
                             Yes
+                        </Button>
+                    </div>
+                </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
+                <ModalHeader>Something Happen with system!</ModalHeader>
+                {
+                    message != "" ?
+                        <ModalBody>
+                            {message}
+                        </ModalBody>
+                        : null
+                }
+                <ModalFooter>
+                    <div className="sm:block text-center">
+                        <Button layout="outline" onClick={closeModal}>
+                            OK
                         </Button>
                     </div>
                 </ModalFooter>

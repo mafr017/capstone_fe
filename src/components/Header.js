@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { SidebarContext } from '../context/SidebarContext'
 import {
   SearchIcon,
@@ -16,9 +16,27 @@ import Cookies from 'js-cookie'
 function Header() {
   const { mode, toggleMode } = useContext(WindmillContext)
   const { toggleSidebar } = useContext(SidebarContext)
+  const [hello, helloSet] = useState(false)
 
   const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] = useState(false)
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
+
+  function getTime() {
+    let now = new Date().getHours();
+    console.log(now);
+    if (now >= 5 && now <= 12) {
+      helloSet(() => "Good Morning")
+    }
+    if (now > 12 && now <= 18) {
+      helloSet(() => "Good Afternoon")
+    }
+    if (now > 18 && now <= 21) {
+      helloSet(() => "Good Evening")
+    }
+    if (now > 21 || (now > 0 && now < 5)) {
+      helloSet(() => "Good Night")
+    }
+  }
 
   function handleNotificationsClick() {
     setIsNotificationsMenuOpen(!isNotificationsMenuOpen)
@@ -27,6 +45,10 @@ function Header() {
   function handleProfileClick() {
     setIsProfileMenuOpen(!isProfileMenuOpen)
   }
+
+  useEffect(() => {
+    getTime()
+  }, [])
 
   return (
     <header className="z-40 py-4 bg-white shadow-bottom dark:bg-gray-800">
@@ -56,7 +78,7 @@ function Header() {
           {/* <!-- Profile menu --> */}
           <li className="relative">
             <span className='my-auto mr-4'>
-              Hello, {Cookies.get("firstName")} {Cookies.get("lastName") != "null" ? Cookies.get("lastName") : ""}
+              {hello}, {Cookies.get("firstName")} {Cookies.get("lastName") != "null" ? Cookies.get("lastName") : ""}
             </span>
             <button
               className="rounded-full focus:shadow-outline-purple focus:outline-none"
@@ -66,7 +88,7 @@ function Header() {
             >
               <Avatar
                 className="align-middle"
-                src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=aa3a807e1bbdfd4364d1f449eaa96d82"
+                src="https://img.icons8.com/ios-glyphs/512/user--v1.png"
                 alt=""
                 aria-hidden="true"
               />

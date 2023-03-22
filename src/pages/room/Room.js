@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import moment from 'moment'
+import 'moment/locale/id'
 
 import PageTitle from '../../components/Typography/PageTitle'
 import { useFetcherGlobal } from '../../hooks/fetcherGlobal';
@@ -27,6 +29,8 @@ function Rooms() {
   const [totalOfPages, setTotalOfPages] = useState(4)
   const [nameRoom, setNameRoom] = useState("")
   const [idRoom, setIdRoom] = useState(0)
+  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
+  const [message, messageSet] = useState("")
 
   const goAddRoom = () => {
     navigate.push("/app/room/add")
@@ -46,7 +50,7 @@ function Rooms() {
       setResultsPerPage(() => 5)
       setTotalOfPages(() => dataRoom?.data?.totalOfItems)
     } else {
-      alert("Get data Failed!")
+      openModalError(() => "Get data Failed!")
     }
   }
 
@@ -59,6 +63,12 @@ function Rooms() {
 
   function closeModal() {
     setIsModalOpen(false)
+    setIsModalErrorOpen(false)
+  }
+
+  function openModalError(param) {
+    messageSet(() => param)
+    setIsModalErrorOpen(true)
   }
 
   async function deleteModal() {
@@ -68,7 +78,7 @@ function Rooms() {
     if (response?.httpStatus) {
       console.log("SUCCESS DELETE ID: " + idRoom);
     } else {
-      alert("Get data Failed!")
+      openModalError(() => "Get data Failed!")
     }
     setIsModalOpen(false)
     onPageChangeTable2(1);
@@ -123,10 +133,10 @@ function Rooms() {
                     <span className="text-sm">{user.capacity}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm">{user.availableFrom}</span>
+                    <span className="text-sm">{moment(user.availableFrom).format('LL')}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm">{user.availableTo}</span>
+                    <span className="text-sm">{moment(user.availableTo).format('LL')}</span>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-4">
@@ -166,6 +176,24 @@ function Rooms() {
             <div className="sm:block">
               <Button block onClick={deleteModal}>
                 Accept
+              </Button>
+            </div>
+          </ModalFooter>
+        </Modal>
+
+        <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
+          <ModalHeader>Something Happen with system!</ModalHeader>
+          {
+            message != "" ?
+              <ModalBody>
+                {message}
+              </ModalBody>
+              : null
+          }
+          <ModalFooter>
+            <div className="sm:block text-center">
+              <Button layout="outline" onClick={closeModal}>
+                OK
               </Button>
             </div>
           </ModalFooter>

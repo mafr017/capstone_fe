@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import moment from 'moment'
+import 'moment/locale/id'
 
 import PageTitle from '../../components/Typography/PageTitle'
 import { useFetcherGlobal } from '../../hooks/fetcherGlobal';
@@ -11,7 +13,8 @@ import {
     TableCell,
     TableRow,
     TableFooter,
-    Pagination
+    Pagination,
+    Modal, ModalHeader, ModalBody, ModalFooter
 } from '@windmill/react-ui'
 
 import { useHistory } from 'react-router-dom'
@@ -19,12 +22,25 @@ import { useHistory } from 'react-router-dom'
 function RoomsUser() {
     // State
     const navigate = useHistory();
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isSuccess, isSuccessSet] = useState(false)
+    const [message, messageSet] = useState("")
+
     const [dataTable2, setDataTable2] = useState([])
     const [resultsPerPage, setResultsPerPage] = useState(6)
     const [totalOfPages, setTotalOfPages] = useState(4)
 
     const goAddRoom = (id) => {
         navigate.push(`/app/reservation/manage/${id}`)
+    }
+
+    function openModal(param) {
+        messageSet(() => param)
+        setIsModalOpen(true)
+    }
+
+    function closeModal() {
+        setIsModalOpen(false)
     }
 
     // Hooks
@@ -36,7 +52,7 @@ function RoomsUser() {
             setResultsPerPage(() => 5)
             setTotalOfPages(() => dataRoom?.data?.totalOfItems)
         } else {
-            alert("Get data Failed!")
+            openModal("Get data Failed!")
         }
     }
 
@@ -83,10 +99,10 @@ function RoomsUser() {
                                         <span className="text-sm">{user.capacity}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.availableFrom}</span>
+                                        <span className="text-sm">{moment(user.availableFrom).format('LL')}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.availableTo}</span>
+                                        <span className="text-sm">{moment(user.availableTo).format('LL')}</span>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center space-x-4">
@@ -109,6 +125,24 @@ function RoomsUser() {
                     </TableFooter>
                 </TableContainer>
             </div>
+
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+                <ModalHeader>Something Happen with system!</ModalHeader>
+                {
+                    message != "" ?
+                        <ModalBody>
+                            {message}
+                        </ModalBody>
+                        : null
+                }
+                <ModalFooter>
+                    <div className="sm:block text-center">
+                        <Button layout="outline" onClick={closeModal}>
+                            OK
+                        </Button>
+                    </div>
+                </ModalFooter>
+            </Modal>
 
         </>
     )

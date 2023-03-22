@@ -1,11 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 import Cookies from "js-cookie";
+import { useHistory } from "react-router-dom";
 require("dotenv").config();
 
 export const useFetcherGlobal = () => {
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useHistory();
 
   async function fetchDataAuth(dataBody, path, method) {
     setIsLoading(true);
@@ -45,7 +47,16 @@ export const useFetcherGlobal = () => {
       setIsLoading(false);
       return dataFromAPI;
     } catch (error) {
-      // console.log(error)
+      if (error?.response?.data?.requestId) {
+        alert("Session Expired")
+        Cookies.remove("token");
+        Cookies.remove("firstName");
+        Cookies.remove("email");
+        Cookies.remove("username");
+        Cookies.remove("id");
+        Cookies.remove("lastName");
+        navigate.push(`/`)
+      }
       return error
     }
   }
