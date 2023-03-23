@@ -12,11 +12,12 @@ import Cookies from 'js-cookie'
 function RoomAdd() {
     const navigate = useHistory();
     const [dataTypeRoom, dataTypeRoomSet] = useState([]);
-
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
     const [isSuccess, isSuccessSet] = useState(false)
     const [message, messageSet] = useState("")
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
+    const { fetchData } = useFetcherGlobal();
 
     const month = [
         { id: "01", name: "January" },
@@ -39,10 +40,7 @@ function RoomAdd() {
         navigate.push("/app/room")
     }
 
-    // Hooks
-    const { register, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
-    const { fetchData } = useFetcherGlobal();
-    const getData = async (page) => {
+    const getData = async () => {
         const dataRoom = await fetchData(null, `/api/v1/type-room`, `GET`);
         if (dataRoom) {
             dataTypeRoomSet(() => dataRoom?.data)
@@ -51,7 +49,6 @@ function RoomAdd() {
         }
     }
 
-    // Func
     function openModal(param) {
         isSuccessSet(() => param)
         setIsModalOpen(true)
@@ -173,7 +170,7 @@ function RoomAdd() {
             <Modal isOpen={isModalOpen} onClose={closeModal}>
                 <ModalHeader>Create Room {isSuccess ? "Success" : "Failed"} !</ModalHeader>
                 {
-                    message != "" ?
+                    message !== "" ?
                         <ModalBody>
                             {message}
                         </ModalBody>
@@ -191,7 +188,7 @@ function RoomAdd() {
             <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
                 <ModalHeader>Something Happen with system!</ModalHeader>
                 {
-                    message != "" ?
+                    message !== "" ?
                         <ModalBody>
                             {message}
                         </ModalBody>

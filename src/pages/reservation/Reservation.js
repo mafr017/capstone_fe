@@ -4,7 +4,6 @@ import 'moment/locale/id'
 
 import PageTitle from '../../components/Typography/PageTitle'
 import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
-import response from '../../utils/demo/tableData'
 import {
     Button,
     TableBody,
@@ -16,18 +15,14 @@ import {
     TableFooter,
     Badge,
     Pagination,
-    Label,
     Modal, ModalHeader, ModalBody, ModalFooter
 } from '@windmill/react-ui'
 
-import { Check, Cross, Plus, SearchIcon } from '../../icons'
-import { useHistory } from 'react-router-dom'
-import Cookies from 'js-cookie';
+import { Check, Cross } from '../../icons'
+import Cookies from 'js-cookie'
 
 function Reservation() {
-    const [pageTable2, setPageTable2] = useState(1)
     const [dataTable2, setDataTable2] = useState([])
-    const navigate = useHistory();
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
     const [isAccepted, isAcceptedSet] = useState(false)
@@ -35,15 +30,14 @@ function Reservation() {
     const [resultsPerPage, setResultsPerPage] = useState(6)
     const [totalOfPages, setTotalOfPages] = useState(4)
     const [idReservation, idReservationSet] = useState(0)
+    const { fetchData } = useFetcherGlobal()
 
-    // Hooks
-    const { fetchData } = useFetcherGlobal();
     const getData = async (page) => {
         var paramUrl = ``
-        if (Cookies.get("role") == "user") {
+        if (Cookies.get("role") === "user") {
             paramUrl = `/${Cookies.get("id")}`
         }
-        const dataRoom = await fetchData(null, `/api/v1/reservation${paramUrl}?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
+        const dataRoom = await fetchData(null, `/api/v1/reservation${paramUrl}?size=${5}&page=${page - 1}&sort=id,asc`, `GET`)
         if (dataRoom?.httpStatus) {
             setDataTable2(dataRoom?.data.data)
             setResultsPerPage(() => 5)
@@ -53,9 +47,6 @@ function Reservation() {
         }
     }
 
-    const goAddRoom = () => {
-        navigate.push("/app/reservation/manage")
-    }
     function openModal(param, isAccepted) {
         isAcceptedSet(() => isAccepted)
         messageSet(() => "{ id: " + param.id + ", room: " + param.nameRoom + ", date: " + param.reservationDate + " }")
@@ -74,7 +65,7 @@ function Reservation() {
     }
 
     const handleAccept = async () => {
-        let response = await fetchData(null, `/api/v1/reservation/${isAccepted ? `accept` : `reject`}/${idReservation}`, `GET`);
+        let response = await fetchData(null, `/api/v1/reservation/${isAccepted ? `accept` : `reject`}/${idReservation}`, `GET`)
         if (response?.httpStatus) {
             openModal(true)
         } else {
@@ -84,7 +75,6 @@ function Reservation() {
         onPageChangeTable2(1)
     }
 
-    // pagination change control
     function onPageChangeTable2(p) {
         getData(p)
     }
@@ -154,15 +144,14 @@ function Reservation() {
                                         <span className="text-sm">{user.nameRoom}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge type={user.status == "Accepted" ? "success"
-                                            : (user.status == "Pending" ? "primary"
-                                                : (user.status == "Rejected" ? "danger" : "base"))}
+                                        <Badge type={user.status === "Accepted" ? "success"
+                                            : (user.status === "Rejected" ? "danger" : "base")}
                                         >{user.status}</Badge>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center space-x-4">
                                             {
-                                                user.status == "Accepted" ?
+                                                user.status === "Accepted" ?
                                                     <Button layout="link" size="icon" aria-label="reject" onClick={() => openModal(user, false)}>
                                                         <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
                                                     </Button>
@@ -208,7 +197,7 @@ function Reservation() {
             <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
                 <ModalHeader>Something Happen with system!</ModalHeader>
                 {
-                    message != "" ?
+                    message !== "" ?
                         <ModalBody>
                             {message}
                         </ModalBody>

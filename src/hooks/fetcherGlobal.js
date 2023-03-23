@@ -55,7 +55,7 @@ export const useFetcherGlobal = () => {
         Cookies.remove("username");
         Cookies.remove("id");
         Cookies.remove("lastName");
-        navigate.push(`/`)
+        // navigate.push(`/`)
       }
       return error
     }

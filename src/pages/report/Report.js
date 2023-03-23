@@ -4,7 +4,6 @@ import 'moment/locale/id'
 
 import PageTitle from '../../components/Typography/PageTitle'
 import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
-import response from '../../utils/demo/tableData'
 import {
     Button,
     TableBody,
@@ -16,20 +15,18 @@ import {
     TableFooter,
     Badge,
     Pagination,
-    Label,
     Modal, ModalHeader, ModalBody, ModalFooter
 } from '@windmill/react-ui'
 
-import { CalendarIcon, Check, Cross } from '../../icons'
 import Cookies from 'js-cookie'
 
 function Report() {
-    const [pageTable2, setPageTable2] = useState(1)
     const [dataTable2, setDataTable2] = useState([])
     const [resultsPerPage, setResultsPerPage] = useState(6)
     const [totalOfPages, setTotalOfPages] = useState(4)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [message, messageSet] = useState("")
+    const { fetchData } = useFetcherGlobal();
 
     function openModal(param) {
         messageSet(() => param)
@@ -40,11 +37,9 @@ function Report() {
         setIsModalOpen(false)
     }
 
-    // Hooks
-    const { fetchData } = useFetcherGlobal();
     const getData = async (page) => {
         var paramUrl = ``
-        if (Cookies.get("role") == "user") {
+        if (Cookies.get("role") === "user") {
             paramUrl = `/${Cookies.get("id")}`
         }
         const dataRoom = await fetchData(null, `/api/v1/reservation${paramUrl}?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
@@ -57,7 +52,6 @@ function Report() {
         }
     }
 
-    // pagination change control
     function onPageChangeTable2(p) {
         getData(p)
     }
@@ -141,9 +135,8 @@ function Report() {
                                         <span className="text-sm">{user.nameRoom}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge type={user.status == "Accepted" ? "success"
-                                            : (user.status == "Pending" ? "primary"
-                                                : (user.status == "Rejected" ? "danger" : "base"))}
+                                        <Badge type={user.status === "Accepted" ? "success"
+                                            : (user.status === "Rejected" ? "danger" : "base")}
                                         >{user.status}</Badge>
                                     </TableCell>
                                 </TableRow>
@@ -164,7 +157,7 @@ function Report() {
             <Modal isOpen={isModalOpen} onClose={closeModal}>
                 <ModalHeader>Something Happen with system!</ModalHeader>
                 {
-                    message != "" ?
+                    message !== "" ?
                         <ModalBody>
                             {message}
                         </ModalBody>

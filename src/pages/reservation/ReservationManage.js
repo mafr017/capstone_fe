@@ -10,7 +10,6 @@ import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
 import Cookies from 'js-cookie'
 
 export default function ReservationManage() {
-
     const navigate = useHistory();
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
@@ -21,7 +20,10 @@ export default function ReservationManage() {
     const [startTimee, startTimeeSet] = useState([])
     const [endTime, endTimeSet] = useState([])
     const [resTime, resTimeSet] = useState()
-    const [startDate, setStartDate] = useState(new Date());
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
+    const startTime = register("startTime", { required: { value: true, message: "Start Time is Required!" } })
+    const { fetchData } = useFetcherGlobal();
+
 
     const id = useParams().id + ""
 
@@ -42,17 +44,10 @@ export default function ReservationManage() {
         { id: 14, name: "20:00" },
         { id: 15, name: "21:00" },
     ];
-    const d = new Date();
-    let yearData = d.getFullYear();
 
     const backToRoom = () => {
         navigate.push("/app/room-user")
     }
-
-    // Hooks
-    const { register, setValue, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
-    const startTime = register("startTime", { required: { value: true, message: "Start Time is Required!" } })
-    const { fetchData } = useFetcherGlobal();
 
     const getData = async (page) => {
         const dataRoom = await fetchData(null, `/api/v1/rooms/${id}`, `GET`);
@@ -92,7 +87,6 @@ export default function ReservationManage() {
         }
     }
 
-    // Func
     function openModal(param) {
         isSuccessSet(() => param)
         setIsModalOpen(true)
@@ -111,6 +105,8 @@ export default function ReservationManage() {
     const handleRegister = async (data) => {
         data.idUser = parseInt(Cookies.get("id"))
         data.idRoom = idRoom
+        data.startTime = time.filter((x) => x.id.toString() === data.startTime)[0].name
+        data.endTime = time.filter((x) => x.id.toString() === data.endTime)[0].name
         let response = await fetchData(data, `/api/v1/reservation`, `POST`);
         reset();
         if (response?.httpStatus) {
@@ -137,7 +133,7 @@ export default function ReservationManage() {
 
     useEffect(() => {
         startTimeeSet(() => time.slice(0, time.length - 1))
-        endTimeSet(() => time)
+        endTimeSet(() => time.slice(1, time.length))
         getData();
     }, [])
 
@@ -200,7 +196,7 @@ export default function ReservationManage() {
                             <option value={""} disabled selected>Select Time</option>
                             {
                                 startTimee.map((time, i) => (
-                                    <option value={time.name} key={i}>{time.name}</option>
+                                    <option value={time.id} key={i}>{time.name}</option>
                                 ))
                             }
                         </Select>
@@ -213,7 +209,7 @@ export default function ReservationManage() {
                         >
                             <option value={""} disabled selected>Select Time</option>
                             {endTime.map((time, i) => (
-                                <option value={time.name} key={i}>{time.name}</option>
+                                <option value={time.id} key={i}>{time.name}</option>
                             ))}
                         </Select>
                         {errors.availableMonth && <span className='text-red-600 mt-1'>{errors?.availableMonth?.message}</span>}
@@ -237,7 +233,7 @@ export default function ReservationManage() {
             <Modal isOpen={isModalOpen} onClose={closeModal}>
                 <ModalHeader>Reservation Room {isSuccess ? "Success" : "Failed"} !</ModalHeader>
                 {
-                    message != "" ?
+                    message !== "" ?
                         <ModalBody>
                             {message}
                         </ModalBody>
@@ -255,7 +251,7 @@ export default function ReservationManage() {
             <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
                 <ModalHeader>Something Happen with system!</ModalHeader>
                 {
-                    message != "" ?
+                    message !== "" ?
                         <ModalBody>
                             {message}
                         </ModalBody>

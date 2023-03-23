@@ -21,7 +21,6 @@ import { EditIcon, Plus, TrashIcon } from '../../icons'
 import { useHistory } from 'react-router-dom'
 
 function Rooms() {
-  // State
   const navigate = useHistory();
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [dataTable2, setDataTable2] = useState([])
@@ -31,6 +30,7 @@ function Rooms() {
   const [idRoom, setIdRoom] = useState(0)
   const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
   const [message, messageSet] = useState("")
+  const { fetchData } = useFetcherGlobal();
 
   const goAddRoom = () => {
     navigate.push("/app/room/add")
@@ -41,8 +41,6 @@ function Rooms() {
   }
 
 
-  // Hooks
-  const { fetchData } = useFetcherGlobal();
   const getData = async (page) => {
     const dataRoom = await fetchData(null, `/api/v1/rooms/pagination?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
     if (dataRoom?.httpStatus) {
@@ -54,7 +52,6 @@ function Rooms() {
     }
   }
 
-  // Func
   function openModal(nameRoom, idRoom) {
     setNameRoom(() => nameRoom)
     setIdRoom(() => idRoom)
@@ -84,7 +81,6 @@ function Rooms() {
     onPageChangeTable2(1);
   }
 
-  // pagination change control
   function onPageChangeTable2(p) {
     getData(p)
   }
@@ -184,7 +180,7 @@ function Rooms() {
         <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
           <ModalHeader>Something Happen with system!</ModalHeader>
           {
-            message != "" ?
+            message !== "" ?
               <ModalBody>
                 {message}
               </ModalBody>

@@ -20,15 +20,13 @@ import {
 import { useHistory } from 'react-router-dom'
 
 function RoomsUser() {
-    // State
     const navigate = useHistory();
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [isSuccess, isSuccessSet] = useState(false)
     const [message, messageSet] = useState("")
-
     const [dataTable2, setDataTable2] = useState([])
     const [resultsPerPage, setResultsPerPage] = useState(6)
     const [totalOfPages, setTotalOfPages] = useState(4)
+    const { fetchData } = useFetcherGlobal();
 
     const goAddRoom = (id) => {
         navigate.push(`/app/reservation/manage/${id}`)
@@ -43,8 +41,6 @@ function RoomsUser() {
         setIsModalOpen(false)
     }
 
-    // Hooks
-    const { fetchData } = useFetcherGlobal();
     const getData = async (page) => {
         const dataRoom = await fetchData(null, `/api/v1/rooms/pagination?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
         if (dataRoom?.httpStatus) {
@@ -56,7 +52,6 @@ function RoomsUser() {
         }
     }
 
-    // pagination change control
     function onPageChangeTable2(p) {
         getData(p)
     }
@@ -129,7 +124,7 @@ function RoomsUser() {
             <Modal isOpen={isModalOpen} onClose={closeModal}>
                 <ModalHeader>Something Happen with system!</ModalHeader>
                 {
-                    message != "" ?
+                    message !== "" ?
                         <ModalBody>
                             {message}
                         </ModalBody>

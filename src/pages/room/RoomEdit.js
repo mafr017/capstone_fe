@@ -12,15 +12,13 @@ import Cookies from 'js-cookie'
 function RoomEdit() {
     const navigate = useHistory();
     const [dataTypeRoom, dataTypeRoomSet] = useState([]);
-
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
     const [isSuccess, isSuccessSet] = useState(false)
     const [message, messageSet] = useState("")
-
-    console.log(useParams().id);
+    const { register, setValue, handleSubmit, formState: { errors } } = useForm({ mode: 'onBlur' });
+    const { fetchData } = useFetcherGlobal();
     const id = useParams().id + ""
-
     const month = [
         { id: "01", name: "January" },
         { id: "02", name: "February" },
@@ -43,11 +41,7 @@ function RoomEdit() {
         navigate.push("/app/room")
     }
 
-    // Hooks
-    const { register, setValue, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
-    const { fetchData } = useFetcherGlobal();
-
-    const getData = async (page) => {
+    const getData = async () => {
         const dataRoom = await fetchData(null, `/api/v1/rooms/${id}`, `GET`);
         if (dataRoom?.httpStatus) {
             setValue('nameRoom', dataRoom?.data.nameRoom);
@@ -60,7 +54,7 @@ function RoomEdit() {
         }
     }
 
-    const getDataTypeRoom = async (page) => {
+    const getDataTypeRoom = async () => {
         const dataTypeRoom = await fetchData(null, `/api/v1/type-room`, `GET`);
         if (dataTypeRoom?.httpStatus) {
             dataTypeRoomSet(() => dataTypeRoom?.data)
@@ -69,7 +63,6 @@ function RoomEdit() {
         }
     }
 
-    // Func
     function openModal(param) {
         isSuccessSet(() => param)
         setIsModalOpen(true)
@@ -193,7 +186,7 @@ function RoomEdit() {
             <Modal isOpen={isModalOpen} onClose={closeModal}>
                 <ModalHeader>Edit Room {isSuccess ? "Success" : "Failed"} !</ModalHeader>
                 {
-                    message != "" ?
+                    message !== "" ?
                         <ModalBody>
                             {message}
                         </ModalBody>
@@ -211,7 +204,7 @@ function RoomEdit() {
             <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
                 <ModalHeader>Something Happen with system!</ModalHeader>
                 {
-                    message != "" ?
+                    message !== "" ?
                         <ModalBody>
                             {message}
                         </ModalBody>

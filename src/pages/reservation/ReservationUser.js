@@ -15,30 +15,22 @@ import {
     TableFooter,
     Badge,
     Pagination,
-    Label,
     Modal, ModalHeader, ModalBody, ModalFooter
 } from '@windmill/react-ui'
 
-import { Cross, SearchIcon } from '../../icons'
-import { useHistory } from 'react-router-dom'
+import { Cross } from '../../icons'
 import Cookies from 'js-cookie';
 
 function ReservationUser() {
-
-    const navigate = useHistory();
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [isSuccess, isSuccessSet] = useState(false)
     const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
     const [message, messageSet] = useState("")
-
-    const [pageTable2, setPageTable2] = useState(1)
     const [dataTable2, setDataTable2] = useState([])
     const [resultsPerPage, setResultsPerPage] = useState(6)
     const [totalOfPages, setTotalOfPages] = useState(4)
     const [idReservation, idReservationSet] = useState(0)
-
-    // Hooks
     const { fetchData } = useFetcherGlobal();
+
     const getData = async (page) => {
         const dataRoom = await fetchData(null, `/api/v1/reservation/${Cookies.get("id")}?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
         if (dataRoom?.httpStatus) {
@@ -50,7 +42,6 @@ function ReservationUser() {
         }
     }
 
-    // pagination change control
     function openModal(param) {
         messageSet(() => "{ id: " + param.id + ", room: " + param.nameRoom + ", date: " + param.reservationDate + " }")
         idReservationSet(() => param.id)
@@ -78,7 +69,6 @@ function ReservationUser() {
         onPageChangeTable2(1)
     }
 
-    // pagination change control
     function onPageChangeTable2(p) {
         getData(p)
     }
@@ -148,14 +138,14 @@ function ReservationUser() {
                                         <span className="text-sm">{user.nameRoom}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge type={user.status == "Accepted" ? "success"
-                                            : (user.status == "Rejected" ? "danger" : "base")}
+                                        <Badge type={user.status === "Accepted" ? "success"
+                                            : (user.status === "Rejected" ? "danger" : "base")}
                                         >{user.status}</Badge>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center justify-center">
                                             {
-                                                user.status != "Rejected" ?
+                                                user.status !== "Rejected" ?
                                                     <Button layout="link" size="icon" aria-label="reject" onClick={() => openModal(user)}>
                                                         <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
                                                     </Button>
@@ -201,7 +191,7 @@ function ReservationUser() {
             <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
                 <ModalHeader>Something Happen with system!</ModalHeader>
                 {
-                    message != "" ?
+                    message !== "" ?
                         <ModalBody>
                             {message}
                         </ModalBody>

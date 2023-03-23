@@ -1,20 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { SidebarContext } from '../context/SidebarContext'
 import {
-  SearchIcon,
-  MoonIcon,
-  SunIcon,
-  BellIcon,
   MenuIcon,
-  OutlinePersonIcon,
-  OutlineCogIcon,
   OutlineLogoutIcon,
 } from '../icons'
-import { Avatar, Badge, Input, Dropdown, DropdownItem, WindmillContext } from '@windmill/react-ui'
+import { Avatar, Dropdown, DropdownItem } from '@windmill/react-ui'
 import Cookies from 'js-cookie'
 
 function Header() {
-  const { mode, toggleMode } = useContext(WindmillContext)
   const { toggleSidebar } = useContext(SidebarContext)
   const [hello, helloSet] = useState(false)
 
@@ -23,7 +16,6 @@ function Header() {
 
   function getTime() {
     let now = new Date().getHours();
-    console.log(now);
     if (now >= 5 && now <= 12) {
       helloSet(() => "Good Morning")
     }
@@ -78,7 +70,7 @@ function Header() {
           {/* <!-- Profile menu --> */}
           <li className="relative">
             <span className='my-auto mr-4'>
-              {hello}, {Cookies.get("firstName")} {Cookies.get("lastName") != "null" ? Cookies.get("lastName") : ""}
+              {hello}, {Cookies.get("firstName")} {Cookies.get("lastName") !== "null" ? Cookies.get("lastName") : ""}
             </span>
             <button
               className="rounded-full focus:shadow-outline-purple focus:outline-none"
