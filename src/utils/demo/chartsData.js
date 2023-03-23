@@ -1,7 +1,6 @@
 export const doughnutLegends = [
-  { title: 'Pending', color: 'bg-blue-500' },
-  { title: 'Accepted', color: 'bg-teal-600' },
-  { title: 'Refused', color: 'bg-purple-600' },
+  { title: 'Accepted', color: 'bg-green-500' },
+  { title: 'Rejected', color: 'bg-red-900' },
 ]
 
 export const lineLegends = [
@@ -13,20 +12,20 @@ export const barLegends = [
   { title: 'Bags', color: 'bg-purple-600' },
 ]
 
-export const doughnutOptions = {
+export var doughnutOptions = {
   data: {
     datasets: [
       {
-        data: [33, 33, 33],
+        data: [],
         /**
          * These colors come from Tailwind CSS palette
          * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
          */
-        backgroundColor: ['#0694a2', '#1c64f2', '#7e3af2'],
+        backgroundColor: ['#4CAF50', '#B71C1C'],
         label: 'Dataset 1',
       },
     ],
-    labels: ['Pending', 'Accepted', 'Refused'],
+    labels: ['Accepted', 'Rejected'],
   },
   options: {
     responsive: true,

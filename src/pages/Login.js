@@ -9,17 +9,12 @@ import { Label, Input, Button, Modal, ModalHeader, ModalBody, ModalFooter } from
 import { useFetcherGlobal } from '../hooks/fetcherGlobal';
 
 function Login({ loginSet }) {
-  // State
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isSuccess, isSuccessSet] = useState(false)
   const [message, messageSet] = useState("")
-
-  // Hooks
   const { fetchDataAuth } = useFetcherGlobal();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
 
-  const { register, handleSubmit, reset, formState: { errors, touchedFields } } = useForm({ mode: 'onBlur' });
-
-  // Func
   function openModal(param) {
     isSuccessSet(() => param)
     setIsModalOpen(true)
@@ -30,8 +25,6 @@ function Login({ loginSet }) {
   }
 
   const handleLogin = async (dataa) => {
-
-    console.log(dataa);
     let response = await fetchDataAuth(dataa, `/api/v1/auth/login`, `POST`);
     reset();
     if (response?.httpStatus) {
@@ -50,9 +43,6 @@ function Login({ loginSet }) {
 
     }
   }
-
-  // Use Effect
-  // console.log({ errors, touchedFields })
 
   return (
     <>
@@ -117,7 +107,7 @@ function Login({ loginSet }) {
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <ModalHeader>Create User {isSuccess ? "Success" : "Failed"} !</ModalHeader>
         {
-          message != "" ?
+          message !== "" ?
             <ModalBody>
               {message}
             </ModalBody>

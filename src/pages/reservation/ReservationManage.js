@@ -7,11 +7,12 @@ import { CalendarIcon, HomeIcon, Plus, BackIcon } from '../../icons'
 import { useHistory, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
+import Cookies from 'js-cookie'
 
 export default function ReservationManage() {
-
     const navigate = useHistory();
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
     const [isSuccess, isSuccessSet] = useState(false)
     const [message, messageSet] = useState("")
     const [name, nameSet] = useState("")
@@ -19,9 +20,11 @@ export default function ReservationManage() {
     const [startTimee, startTimeeSet] = useState([])
     const [endTime, endTimeSet] = useState([])
     const [resTime, resTimeSet] = useState()
-    const [startDate, setStartDate] = useState(new Date());
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
+    const startTime = register("startTime", { required: { value: true, message: "Start Time is Required!" } })
+    const { fetchData } = useFetcherGlobal();
 
-    console.log(useParams().id);
+
     const id = useParams().id + ""
 
     const time = [
@@ -41,26 +44,18 @@ export default function ReservationManage() {
         { id: 14, name: "20:00" },
         { id: 15, name: "21:00" },
     ];
-    const d = new Date();
-    let yearData = d.getFullYear();
 
     const backToRoom = () => {
         navigate.push("/app/room-user")
     }
 
-    // Hooks
-    const { register, setValue, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
-    const startTime = register("startTime", { required: { value: true, message: "Start Time is Required!" } })
-    const { fetchData } = useFetcherGlobal();
-
     const getData = async (page) => {
         const dataRoom = await fetchData(null, `/api/v1/rooms/${id}`, `GET`);
         if (dataRoom?.httpStatus) {
-            console.log(dataRoom?.data.nameRoom);
             nameSet(() => dataRoom?.data.nameRoom);
             idRoomSet(() => dataRoom?.data.id)
         } else {
-            alert("Get data Failed!")
+            openModalError(() => "Get data Failed!")
         }
     }
 
@@ -69,7 +64,6 @@ export default function ReservationManage() {
         if (dataTime?.httpStatus) {
             if (dataTime?.data != null) {
                 resTimeSet(() => dataTime?.data)
-                console.log(dataTime?.data);
                 if (dataTime?.data.jam_07 != null) changeStartTime(1)
                 if (dataTime?.data.jam_08 != null) changeStartTime(2)
                 if (dataTime?.data.jam_09 != null) changeStartTime(3)
@@ -91,22 +85,36 @@ export default function ReservationManage() {
         } else {
             startTimeeSet(() => time)
         }
-        console.log(startTimee);
     }
 
-    // Func
     function openModal(param) {
         isSuccessSet(() => param)
         setIsModalOpen(true)
     }
 
+    function openModalError(param) {
+        messageSet(() => param)
+        setIsModalErrorOpen(true)
+    }
+
     function closeModal() {
         setIsModalOpen(false)
+        setIsModalErrorOpen(false)
     }
 
     const handleRegister = async (data) => {
-        console.log(data);
-        setIsModalOpen(true)
+        data.idUser = parseInt(Cookies.get("id"))
+        data.idRoom = idRoom
+        data.startTime = time.filter((x) => x.id.toString() === data.startTime)[0].name
+        data.endTime = time.filter((x) => x.id.toString() === data.endTime)[0].name
+        let response = await fetchData(data, `/api/v1/reservation`, `POST`);
+        reset();
+        if (response?.httpStatus) {
+            openModal(true)
+        } else {
+            messageSet(() => response?.response?.data?.data)
+            openModal(false)
+        }
     }
 
     const onChangeDate = (data) => {
@@ -125,7 +133,7 @@ export default function ReservationManage() {
 
     useEffect(() => {
         startTimeeSet(() => time.slice(0, time.length - 1))
-        endTimeSet(() => time)
+        endTimeSet(() => time.slice(1, time.length))
         getData();
     }, [])
 
@@ -155,7 +163,7 @@ export default function ReservationManage() {
                         </div>
                         {errors.nameRoom && <span className='text-red-600 mt-1'>{errors?.nameRoom?.message}</span>}
                     </Label>
-                    <div className='mt-4'>
+                    <div className='mt-4 max-w-xs'>
                         <Label>
                             <span>Date</span>
                             <div className="relative text-gray-500 focus-within:text-purple-600">
@@ -177,7 +185,7 @@ export default function ReservationManage() {
 
                     <Label className="mt-4">
                         <span>Start Time</span>
-                        <Select className="mt-1" name="startTime" {...startTime}
+                        <Select className="mt-1 max-w-xs" name="startTime" {...startTime}
                             onChange={(e) => {
                                 startTime.onChange(e);
                                 onChangeStartTime(e)
@@ -197,7 +205,7 @@ export default function ReservationManage() {
 
                     <Label className="mt-4">
                         <span>End Time</span>
-                        <Select className="mt-1" name="endTime" {...register("endTime", { required: { value: true, message: "Start Time is Required!" } })}
+                        <Select className="mt-1 max-w-xs" name="endTime" {...register("endTime", { required: { value: true, message: "Start Time is Required!" } })}
                         >
                             <option value={""} disabled selected>Select Time</option>
                             {endTime.map((time, i) => (
@@ -209,7 +217,7 @@ export default function ReservationManage() {
 
                     <div className='flex justify-center gap-4 mb-5 mt-4'>
                         <div>
-                            <Button iconRight={BackIcon} onClick={backToRoom}>
+                            <Button iconLeft={BackIcon} onClick={backToRoom}>
                                 <span>Back</span>
                             </Button>
                         </div>
@@ -225,7 +233,25 @@ export default function ReservationManage() {
             <Modal isOpen={isModalOpen} onClose={closeModal}>
                 <ModalHeader>Reservation Room {isSuccess ? "Success" : "Failed"} !</ModalHeader>
                 {
-                    message != "" ?
+                    message !== "" ?
+                        <ModalBody>
+                            {message}
+                        </ModalBody>
+                        : null
+                }
+                <ModalFooter>
+                    <div className="sm:block text-center">
+                        <Button layout="outline" onClick={closeModal}>
+                            OK
+                        </Button>
+                    </div>
+                </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
+                <ModalHeader>Something Happen with system!</ModalHeader>
+                {
+                    message !== "" ?
                         <ModalBody>
                             {message}
                         </ModalBody>

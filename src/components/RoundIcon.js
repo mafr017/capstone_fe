@@ -7,7 +7,7 @@ function RoundIcon({
   bgColorClass = 'bg-purple-100 dark:bg-purple-600',
   className,
 }) {
-  const baseStyle = 'p-3 rounded-full'
+  const baseStyle = 'p-2 rounded-full'
 
   const cls = classNames(baseStyle, iconColorClass, bgColorClass, className)
   return (

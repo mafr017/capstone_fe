@@ -12,10 +12,12 @@ import Cookies from 'js-cookie'
 function RoomAdd() {
     const navigate = useHistory();
     const [dataTypeRoom, dataTypeRoomSet] = useState([]);
-
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
     const [isSuccess, isSuccessSet] = useState(false)
     const [message, messageSet] = useState("")
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
+    const { fetchData } = useFetcherGlobal();
 
     const month = [
         { id: "01", name: "January" },
@@ -38,26 +40,33 @@ function RoomAdd() {
         navigate.push("/app/room")
     }
 
-    // Hooks
-    const { register, handleSubmit, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
-    const { fetchData } = useFetcherGlobal();
-    const getData = async (page) => {
+    const getData = async () => {
         const dataRoom = await fetchData(null, `/api/v1/type-room`, `GET`);
         if (dataRoom) {
             dataTypeRoomSet(() => dataRoom?.data)
         } else {
-            alert("Get data Failed!")
+            openModalError(() => "Get data Failed!")
         }
     }
 
-    // Func
     function openModal(param) {
         isSuccessSet(() => param)
         setIsModalOpen(true)
     }
 
+    function openModalError(param) {
+        messageSet(() => param)
+        setIsModalErrorOpen(true)
+    }
+
     function closeModal() {
         setIsModalOpen(false)
+        setIsModalErrorOpen(false)
+    }
+
+    function closeModalGoBack() {
+        setIsModalOpen(false)
+        backToRoom()
     }
 
     const handleRegister = async (data) => {
@@ -119,7 +128,7 @@ function RoomAdd() {
                     <Label className="mt-4">
                         <span>Type Room</span>
 
-                        <Select className="mt-1" name="idType" {...register("idType", {
+                        <Select className="mt-1 max-w-xs" name="idType" {...register("idType", {
                             required: { value: true, message: "Type Room is Required!" }
                         })}>
                             <option value={""} disabled selected>Select Type Room</option>
@@ -132,7 +141,7 @@ function RoomAdd() {
 
                     <Label className="mt-4">
                         <span>Available For Month</span>
-                        <Select className="mt-1" name="availableMonth" {...register("availableMonth", {
+                        <Select className="mt-1 max-w-xs" name="availableMonth" {...register("availableMonth", {
                             required: { value: true, message: "Available Month is Required!" }
                         })}>
                             <option value={""} disabled selected>Select Month</option>
@@ -145,7 +154,7 @@ function RoomAdd() {
 
                     <div className='flex justify-center gap-4 mb-5 mt-4'>
                         <div>
-                            <Button iconRight={BackIcon} onClick={backToRoom}>
+                            <Button iconLeft={BackIcon} onClick={backToRoom}>
                                 <span>Back</span>
                             </Button>
                         </div>
@@ -161,7 +170,25 @@ function RoomAdd() {
             <Modal isOpen={isModalOpen} onClose={closeModal}>
                 <ModalHeader>Create Room {isSuccess ? "Success" : "Failed"} !</ModalHeader>
                 {
-                    message != "" ?
+                    message !== "" ?
+                        <ModalBody>
+                            {message}
+                        </ModalBody>
+                        : null
+                }
+                <ModalFooter>
+                    <div className="sm:block text-center">
+                        <Button layout="outline" onClick={isSuccess ? closeModalGoBack : closeModal}>
+                            OK
+                        </Button>
+                    </div>
+                </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
+                <ModalHeader>Something Happen with system!</ModalHeader>
+                {
+                    message !== "" ?
                         <ModalBody>
                             {message}
                         </ModalBody>

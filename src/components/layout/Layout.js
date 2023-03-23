@@ -1,4 +1,4 @@
-import React, { useContext, Suspense, useEffect, lazy, useState } from 'react'
+import React, { useContext, Suspense, useEffect, lazy } from 'react'
 import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import routes from '../../routes'
 import Cookies from "js-cookie";
@@ -33,7 +33,7 @@ function Layout() {
           <Suspense fallback={<ThemedSuspense />}>
             <Switch>
               {routes.map((route, i) => {
-                return (route.role == "all" || route.role == role) ? (
+                return (route.role === "all" || route.role === role) ? (
                   <Route
                     key={i}
                     exact={true}

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
+import moment from 'moment'
+import 'moment/locale/id'
 
 import PageTitle from '../../components/Typography/PageTitle'
-import response from '../../utils/demo/tableData'
+import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
 import {
     Button,
     TableBody,
@@ -13,46 +15,66 @@ import {
     TableFooter,
     Badge,
     Pagination,
-    Label,
     Modal, ModalHeader, ModalBody, ModalFooter
 } from '@windmill/react-ui'
 
-import { Cross, SearchIcon } from '../../icons'
-import { useHistory } from 'react-router-dom'
+import { Cross } from '../../icons'
+import Cookies from 'js-cookie';
 
 function ReservationUser() {
-
-    const navigate = useHistory();
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [isSuccess, isSuccessSet] = useState(false)
+    const [isModalErrorOpen, setIsModalErrorOpen] = useState(false)
     const [message, messageSet] = useState("")
-
-    const [pageTable2, setPageTable2] = useState(1)
     const [dataTable2, setDataTable2] = useState([])
+    const [resultsPerPage, setResultsPerPage] = useState(6)
+    const [totalOfPages, setTotalOfPages] = useState(4)
+    const [idReservation, idReservationSet] = useState(0)
+    const { fetchData } = useFetcherGlobal();
 
-    // pagination setup
-    const resultsPerPage = 10
-    const totalResults = response.length
+    const getData = async (page) => {
+        const dataRoom = await fetchData(null, `/api/v1/reservation/${Cookies.get("id")}?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
+        if (dataRoom?.httpStatus) {
+            setDataTable2(dataRoom?.data.data)
+            setResultsPerPage(() => 5)
+            setTotalOfPages(() => dataRoom?.data?.totalOfItems)
+        } else {
+            openModalError(() => "Get data Failed!")
+        }
+    }
 
-    // pagination change control
     function openModal(param) {
-        messageSet(() => "{ id: " + param.id + ", room: " + param.room + ", date: " + new Date(param.date).toLocaleDateString() + " }")
+        messageSet(() => "{ id: " + param.id + ", room: " + param.nameRoom + ", date: " + param.reservationDate + " }")
+        idReservationSet(() => param.id)
         setIsModalOpen(true)
+    }
+
+    function openModalError(param) {
+        messageSet(() => param)
+        setIsModalErrorOpen(true)
     }
 
     function closeModal() {
         setIsModalOpen(false)
+        setIsModalErrorOpen(false)
+    }
+
+    const handleReject = async () => {
+        let response = await fetchData(null, `/api/v1/reservation/reject/${idReservation}`, `GET`);
+        if (response?.httpStatus) {
+            openModal(true)
+        } else {
+            alert(response?.response?.data?.data)
+        }
+        setIsModalOpen(false)
+        onPageChangeTable2(1)
     }
 
     function onPageChangeTable2(p) {
-        setPageTable2(p)
+        getData(p)
     }
 
-    // on page change, load new sliced data
-    // here you would make another server request for new data
     useEffect(() => {
-        setDataTable2(response.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-    }, [pageTable2])
+    }, [resultsPerPage, totalOfPages])
 
     return (
         <>
@@ -60,7 +82,7 @@ function ReservationUser() {
 
             <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
 
-                <div className='flex justify-between'>
+                {/* <div className='flex justify-between'>
                     <div className='w-1/4 mb-5 my-auto'>
                         <Label className="mt-4">
                             <div className="relative text-gray-500 focus-within:text-purple-600">
@@ -74,9 +96,9 @@ function ReservationUser() {
                             </div>
                         </Label>
                     </div>
-                </div>
+                </div> */}
 
-                <TableContainer className="mb-8">
+                <TableContainer className="mt-4 mb-8">
                     <Table>
                         <TableHeader>
                             <tr>
@@ -101,35 +123,34 @@ function ReservationUser() {
                                         <span className="text-sm">{user.id}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                                        <span className="text-sm">{moment(user.reservationDate).format('LL')}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.startTime).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{user.startTime} WIB</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.endTime).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{user.endTime} WIB</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.name}</span>
+                                        <span className="text-sm">{user.nameUser}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.room}</span>
+                                        <span className="text-sm">{user.nameRoom}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge type={user.status == "Accepted" ? "success"
-                                            : (user.status == "Pending" ? "primary"
-                                                : (user.status == "Refused" ? "danger" : "base"))}
+                                        <Badge type={user.status === "Accepted" ? "success"
+                                            : (user.status === "Rejected" ? "danger" : "base")}
                                         >{user.status}</Badge>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center justify-center">
                                             {
-                                                user.status != "Refused" ?
-                                                    <Button layout="link" size="icon" aria-label="Cancel" onClick={() => openModal(user)}>
+                                                user.status !== "Rejected" ?
+                                                    <Button layout="link" size="icon" aria-label="reject" onClick={() => openModal(user)}>
                                                         <Cross className="w-5 h-5 text-red-500" aria-hidden="true" />
                                                     </Button>
                                                     :
-                                                    <Button layout="link" size="icon" aria-label="Cancel" disabled>
+                                                    <Button layout="link" size="icon" aria-label="reject" disabled>
                                                         <Cross className="w-5 h-5 text-gray-500" aria-hidden="true" />
                                                     </Button>
                                             }
@@ -141,8 +162,8 @@ function ReservationUser() {
                     </Table>
                     <TableFooter>
                         <Pagination
-                            totalResults={totalResults}
-                            resultsPerPage={resultsPerPage}
+                            totalResults={totalOfPages}
+                            resultsPerPage={5}
                             onChange={onPageChangeTable2}
                             label="Table navigation"
                         />
@@ -160,8 +181,26 @@ function ReservationUser() {
                         </Button>
                     </div>
                     <div className="sm:block text-center">
-                        <Button layout="outline" onClick={closeModal}>
+                        <Button layout="outline" onClick={handleReject}>
                             Yes
+                        </Button>
+                    </div>
+                </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={isModalErrorOpen} onClose={closeModal}>
+                <ModalHeader>Something Happen with system!</ModalHeader>
+                {
+                    message !== "" ?
+                        <ModalBody>
+                            {message}
+                        </ModalBody>
+                        : null
+                }
+                <ModalFooter>
+                    <div className="sm:block text-center">
+                        <Button layout="outline" onClick={closeModal}>
+                            OK
                         </Button>
                     </div>
                 </ModalFooter>

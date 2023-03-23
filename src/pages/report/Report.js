@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
+import moment from 'moment'
+import 'moment/locale/id'
 
 import PageTitle from '../../components/Typography/PageTitle'
-import response from '../../utils/demo/tableData'
+import { useFetcherGlobal } from '../../hooks/fetcherGlobal'
 import {
     Button,
     TableBody,
@@ -13,29 +15,49 @@ import {
     TableFooter,
     Badge,
     Pagination,
-    Label,
+    Modal, ModalHeader, ModalBody, ModalFooter
 } from '@windmill/react-ui'
 
-import { CalendarIcon, Check, Cross } from '../../icons'
+import Cookies from 'js-cookie'
 
 function Report() {
-    const [pageTable2, setPageTable2] = useState(1)
     const [dataTable2, setDataTable2] = useState([])
+    const [resultsPerPage, setResultsPerPage] = useState(6)
+    const [totalOfPages, setTotalOfPages] = useState(4)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [message, messageSet] = useState("")
+    const { fetchData } = useFetcherGlobal();
 
-    // pagination setup
-    const resultsPerPage = 10
-    const totalResults = response.length
-
-    // pagination change control
-    function onPageChangeTable2(p) {
-        setPageTable2(p)
+    function openModal(param) {
+        messageSet(() => param)
+        setIsModalOpen(true)
     }
 
-    // on page change, load new sliced data
-    // here you would make another server request for new data
+    function closeModal() {
+        setIsModalOpen(false)
+    }
+
+    const getData = async (page) => {
+        var paramUrl = ``
+        if (Cookies.get("role") === "user") {
+            paramUrl = `/${Cookies.get("id")}`
+        }
+        const dataRoom = await fetchData(null, `/api/v1/reservation${paramUrl}?size=${5}&page=${page - 1}&sort=id,asc`, `GET`);
+        if (dataRoom?.httpStatus) {
+            setDataTable2(dataRoom?.data.data)
+            setResultsPerPage(() => 5)
+            setTotalOfPages(() => dataRoom?.data?.totalOfItems)
+        } else {
+            openModal("Get data Failed!")
+        }
+    }
+
+    function onPageChangeTable2(p) {
+        getData(p)
+    }
+
     useEffect(() => {
-        setDataTable2(response.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-    }, [pageTable2])
+    }, [resultsPerPage, totalOfPages])
 
     return (
         <>
@@ -43,7 +65,7 @@ function Report() {
 
             <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
 
-                <div className='flex justify-start mb-5 mt-4'>
+                {/* <div className='flex justify-start mb-5 mt-4'>
                     <div className='w-1/4 my-auto mr-5'>
                         <Label>
                             Start Date
@@ -72,9 +94,9 @@ function Report() {
                             </div>
                         </Label>
                     </div>
-                </div>
+                </div> */}
 
-                <TableContainer className="mb-8">
+                <TableContainer className="mt-4 mb-8">
                     <Table>
                         <TableHeader>
                             <tr>
@@ -98,24 +120,23 @@ function Report() {
                                         <span className="text-sm">{user.id}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                                        <span className="text-sm">{moment(user.reservationDate).format('LL')}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.startTime).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{user.startTime} WIB</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{new Date(user.endTime).toLocaleTimeString()}</span>
+                                        <span className="text-sm">{user.endTime} WIB</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.name}</span>
+                                        <span className="text-sm">{user.nameUser}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <span className="text-sm">{user.room}</span>
+                                        <span className="text-sm">{user.nameRoom}</span>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge type={user.status == "Accepted" ? "success"
-                                            : (user.status == "Pending" ? "primary"
-                                                : (user.status == "Refused" ? "danger" : "base"))}
+                                        <Badge type={user.status === "Accepted" ? "success"
+                                            : (user.status === "Rejected" ? "danger" : "base")}
                                         >{user.status}</Badge>
                                     </TableCell>
                                 </TableRow>
@@ -124,14 +145,32 @@ function Report() {
                     </Table>
                     <TableFooter>
                         <Pagination
-                            totalResults={totalResults}
-                            resultsPerPage={resultsPerPage}
+                            totalResults={totalOfPages}
+                            resultsPerPage={5}
                             onChange={onPageChangeTable2}
                             label="Table navigation"
                         />
                     </TableFooter>
                 </TableContainer>
             </div>
+
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+                <ModalHeader>Something Happen with system!</ModalHeader>
+                {
+                    message !== "" ?
+                        <ModalBody>
+                            {message}
+                        </ModalBody>
+                        : null
+                }
+                <ModalFooter>
+                    <div className="sm:block text-center">
+                        <Button layout="outline" onClick={closeModal}>
+                            OK
+                        </Button>
+                    </div>
+                </ModalFooter>
+            </Modal>
 
         </>
     )

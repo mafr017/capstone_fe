@@ -1,27 +1,22 @@
 import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Cookies from "js-cookie";
 import { useForm } from 'react-hook-form'
-import { useFetcherGlobal } from '../hooks/fetcherGlobal';
+import { useFetcherGlobal } from '../hooks/fetcherGlobal'
 
 import ImageLight from '../assets/img/create-account-office.jpeg'
 import ImageDark from '../assets/img/create-account-office-dark.jpeg'
 import { Input, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter } from '@windmill/react-ui'
 
 function Login() {
-  // State
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isSuccess, isSuccessSet] = useState(false)
   const [message, messageSet] = useState("")
+  const { fetchDataAuth } = useFetcherGlobal()
+  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm({ mode: 'onBlur' })
+  const password = useRef({})
 
+  password.current = watch("password", "")
 
-  // Hooks
-  const { fetchDataAuth } = useFetcherGlobal();
-  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm({ mode: 'onBlur' });
-  const password = useRef({});
-  password.current = watch("password", "");
-
-  // Func
   function openModal(param) {
     isSuccessSet(() => param)
     setIsModalOpen(true)
@@ -32,8 +27,8 @@ function Login() {
   }
 
   const handleRegister = async (data) => {
-    let response = await fetchDataAuth(data, `/api/v1/auth/register`, `POST`);
-    reset();
+    let response = await fetchDataAuth(data, `/api/v1/auth/register`, `POST`)
+    reset()
     if (response?.httpStatus) {
       openModal(true)
     } else {
@@ -45,7 +40,6 @@ function Login() {
       }
     }
   }
-  // Use Effect
 
   return (
     <>
@@ -144,7 +138,7 @@ function Login() {
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <ModalHeader>Create User {isSuccess ? "Success" : "Failed"} !</ModalHeader>
         {
-          message != "" ?
+          message !== "" ?
             <ModalBody>
               {message}
             </ModalBody>
