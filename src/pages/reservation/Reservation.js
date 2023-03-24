@@ -84,7 +84,7 @@ function Reservation() {
 
     return (
         <>
-            <PageTitle>Rooms</PageTitle>
+            <PageTitle>Reservation</PageTitle>
 
             <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
 
